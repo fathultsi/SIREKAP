@@ -1,0 +1,80 @@
+create or replace view `v_items_stock` as
+select
+    `i`.`id` as `id`,
+    `i`.`name` as `name`,
+    i.ukuran ,
+    i.untuk_umur,
+    `i`.`stock` as `total_barang`,
+    sum((case when (`o`.`status` = 'DIBATALKAN') then `od`.`quantity` else 0 end)) as `jumlah_batal`,
+    sum((case when (`o`.`status` = 'DIPESAN') then `od`.`quantity` else 0 end)) as `jumlah_dipesan`,
+    sum((case when (`o`.`status` = 'SEDANG_DISEWA') then `od`.`quantity` else 0 end)) as `jumlah_sedang_disewa`,
+    sum((case when (`o`.`status` = 'SELESAI') then `od`.`quantity` else 0 end)) as `jumlah_selesai`
+from
+    ((`items` `i`
+left join `order_details` `od` on
+    ((`i`.`id` = `od`.`item_id`)))
+left join `orders` `o` on
+    ((`o`.`id` = `od`.`order_id`)))
+group by
+    `i`.`id`,
+    `i`.`name`,
+    `i`.`stock`,
+     i.ukuran ,
+     i.untuk_umur
+    ;
+
+
+
+    ----- ini untuk cari items stock berdasrakan tanggal
+SELECT 
+    i.id,
+    i.name,
+    i.rak,
+    i.baris,
+    i.price,
+    i.stock AS total_barang,
+    COALESCE(SUM(CASE WHEN o.status = 'DIPESAN' 
+                     AND (DATE(o.start_date) <= '2024-10-27'
+                     AND DATE(o.end_date) >= '2024-10-26') 
+                     THEN od.quantity ELSE 0 END), 0) AS jumlah_dipesan,
+    COALESCE(SUM(CASE WHEN o.status = 'SEDANG_DISEWA' 
+                     THEN od.quantity ELSE 0 END), 0) AS jumlah_sedang_disewa
+FROM 
+    items AS i
+LEFT JOIN 
+    order_details AS od ON i.id = od.item_id
+LEFT JOIN 
+    orders AS o ON o.id = od.order_id
+GROUP BY 
+    i.id, i.name, i.rak, i.baris, i.price, i.stock;
+
+
+----kebutuan chart
+create or replace view v_chart_order as
+select order_date , COUNT(*) as total from orders o where status !='DIBATALKAN'
+group by order_date 
+
+
+--kebutuan chart saldo
+
+create or replace view v_chart_saldo as
+SELECT 
+    transaction_date, 
+    SUM(
+        CASE 
+            WHEN db_kr = 'K' THEN amount
+            ELSE -amount 
+        END
+    ) AS total
+FROM 
+    pembukuan p
+GROUP BY 
+    transaction_date;
+
+
+    --kebutuan chart items
+
+create  or replace view v_chartItems as
+select i.name , count(od.order_id) as total from order_details od inner join items i on od.item_id  = i.id 
+where  YEAR(od.created_at) = YEAR(CURDATE())
+group by i.name ;
