@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts2.main')
 
 @section('DataTables')
     <link rel="stylesheet" href="{{ asset('templates/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -6,73 +6,389 @@
     <link rel="stylesheet" href="{{ asset('templates/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('templates/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+
+    <style>
+        .db-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+            background: white;
+        }
+
+        .db-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .db-card-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .db-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .db-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #4a4a4a;
+        }
+
+        .db-card-body {
+            padding: 0 20px 15px;
+        }
+
+        .db-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .db-card-desc {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 5px 0 0;
+        }
+
+        .db-card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Color Variants */
+        .db-primary .db-card-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .db-warning .db-card-icon {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .db-danger .db-card-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .db-info .db-card-icon {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+
+        .db-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .db-dark {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .db-light {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        .db-card-link {
+            color: #4a4a4a;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .db-card-link:hover {
+            color: #007bff;
+        }
+
+        .db-card-link i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .db-card-link:hover i {
+            transform: translateX(3px);
+        }
+
+        .db-workday-vertical {
+            margin: 10px 0;
+        }
+
+        .db-workday-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .db-workday-days {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .db-workday-count {
+            font-weight: 600;
+            color: #4a4a4a;
+        }
+    </style>
 @endsection
 
+
 @section('content')
-    <div class="container-fluid">
+    <div class="container pt-4">
         <div class="row">
             <div class="col-12">
-                <h3 class="mb-4">Upload Absensi Excel</h3>
-                <input type="file" id="excelFile" accept=".xlsx" class="form-control mb-3">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Upload File Excel</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="custom-file me-2" style="flex: 1;">
+                                <input type="file" class="custom-file-input" id="excelFile" accept=".xlsx" multiple>
+                                <label class="custom-file-label" for="excelFile">Choose file</label>
+                            </div>
+                            <a href="/halamanRekap" class="ml-2 btn btn-warning">Reset</a>
+                        </div>
+                    </div>
 
+
+                </div>
 
             </div>
         </div>
 
         <div class="row">
-            <div class="card  w-100">
-                <div class="card-header border-0">
-                    <h3 class="card-title">Rekapitulasi Absensi Pegawai</h3>
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-tool btn-sm bg-info">
-                            <i class="fas fa-download"></i>
-                            <span>Export</span>
-                        </a>
-
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <table id="rekapTable" class="table table-bordered table-hover bg-white shadow-sm">
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th class="w-25">Nama</th>
-                                        <th>NIP</th>
-                                        <th>Hari Masuk</th>
-                                        <th>Telat/Cepat Pulang</th>
-                                        <th>Absen Sekali</th>
-                                        <th>Cuti</th>
-                                        <th>Dinas/lainnya</th>
-                                        <th>Tanpa Keterangan</th>
-                                        <th>Masuk Saat Libur</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+            <!-- Hari Kerja Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-primary">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-calendar-alt"></i>
                         </div>
+                        <h3 class="db-card-title">Hari Kerja</h3>
                     </div>
-                </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Detail Absensi</h5>
-                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <div class="db-card-body">
+                        <div class="db-workday-vertical">
+                            <div class="db-workday-row">
+                                <span class="db-workday-days">5 Hari/Minggu:</span>
+                                <span class="db-workday-count" id="hari_kerja5">0</span>
                             </div>
-                            <div class="modal-body">
-                                <div id="modalContent" class="table-responsive"></div>
+                            <div class="db-workday-row">
+                                <span class="db-workday-days">6 Hari/Minggu:</span>
+                                <span class="db-workday-count" id="hari_kerja6">0</span>
                             </div>
                         </div>
+                        <p class="db-card-desc">Total hari kerja bulan <span class="ket_tanggal"></span></p>
                     </div>
                 </div>
+            </div>
 
+            <!-- Libur Nasional Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-warning">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-umbrella-beach"></i>
+                        </div>
+                        <h3 class="db-card-title">Libur Nasional</h3>
+                    </div>
+                    <div class="db-card-body">
+                        <h2 class="db-card-value" id="total_hari_libur">0</h2>
+                        <p class="db-card-desc">hari bulan <span class="ket_tanggal"></span></p>
+                    </div>
+
+                    <div class="db-card-footer">
+                        <a href="#" id="btn_tinjau_libur" class="db-card-link">Tinjau Data <i
+                                class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Duplikat Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-danger">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-clone"></i>
+                        </div>
+                        <h3 class="db-card-title">Data Duplikat</h3>
+                    </div>
+                    <div class="db-card-body">
+                        <h2 class="db-card-value" id="total_duplikat">0</h2>
+                        <p class="db-card-desc">entri terdeteksi</p>
+                    </div>
+                    <div class="db-card-footer">
+                        <a href="#" id="btn_tinjau_duplikat" class="db-card-link">Tinjau Data <i
+                                class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Masuk Saat Libur Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-info">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="db-card-title">Absensi Saat Libur</h3>
+                    </div>
+                    <div class="db-card-body">
+                        <h2 class="db-card-value" id="total_masuk_libur">0</h2>
+                        <p class="db-card-desc">Data</p>
+                    </div>
+                    <div class="db-card-footer">
+                        <a href="#" id="btn_tinjau_masuk_libur" class="db-card-link">Tinjau Data <i
+                                class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
+
+        {{-- navbar --}}
+        <div class="row">
+            <div class="card card-primary card-outline card-outline-tabs w-100">
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill"
+                                href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home"
+                                aria-selected="true">Kehadiran</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill"
+                                href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile"
+                                aria-selected="false">Uang Makan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-four-messages-tab" data-toggle="pill"
+                                href="#custom-tabs-four-messages" role="tab"
+                                aria-controls="custom-tabs-four-messages" aria-selected="false">Tukin</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                        <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel"
+                            aria-labelledby="custom-tabs-four-home-tab">
+                            <div class="row">
+                                <div class="card  w-100">
+                                    <div class="card-header border-0">
+                                        <h3 class="card-title">Rekapitulasi Absensi Pegawai <span
+                                                class="ket_tanggal"></span></h3>
+                                        <div class="card-tools">
+                                            <button id="btn_export" class="btn btn-tool btn-sm bg-info">
+                                                <i class="fas fa-download"></i>
+                                                <span>Export</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <table id="rekapTable"
+                                                    class="table table-bordered table-hover bg-white shadow-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th class="w-25">Nama</th>
+                                                            <th>NIP</th>
+                                                            <th>Hari Masuk</th>
+                                                            <th>Telat/Cepat Pulang</th>
+                                                            <th>Absen Sekali</th>
+                                                            <th>Cuti</th>
+                                                            <th>Dinas/lainnya</th>
+                                                            <th>Tanpa Keterangan</th>
+                                                            <th>Absensi Saat Libur</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel"
+                            aria-labelledby="custom-tabs-four-profile-tab">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card w-100">
+                                        <div class="card-header border-0">
+                                            <h3 class="card-title">Rekapitulasi Uang Makan <span
+                                                    class="ket_tanggal"></span></h3>
+                                            <div class="card-tools">
+                                                <button id="btn_exp_uang_makan" class="btn btn-tool btn-sm bg-info">
+                                                    <i class="fas fa-download"></i>
+                                                    <span>Export</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <table id="table_rekap_uang_makan"
+                                                class="table table-bordered table-hover bg-white shadow-sm table-sm  w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>NIP</th>
+                                                        <th class="w-25">Nama</th>
+                                                        <th>Gol/Ruang</th>
+                                                        <th>Hari Masuk</th>
+                                                        <th>Uang_Makan</th>
+                                                        <th>PPH_____</th>
+                                                        <th>Jumlah_Bersih</th>
+                                                        <th>Status</th>
+                                                        {{-- <th>Satker 2</th>
+                                                <th>Satker 3</th> --}}
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    {{-- tabel rekap tabel uang makan --}}
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel"
+                            aria-labelledby="custom-tabs-four-messages-tab">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
     </div>
+
+    @include('pages.rekap.modals')
 @endsection
 
 @section('scripts_DataTables')
@@ -94,6 +410,11 @@
 @section('scripts')
     <script>
         var dataPegawai = [];
+        var untukExportRekap = [];
+        var hasilrekapuangmakan = [];
+        var bulanTahun = "";
+        var dataExportTanpaKeterangan = [];
+        var dataExportAbsensiSekali = [];
         const nip6HariKerja = [
             "196812312005011067",
             "197002102006042001",
@@ -101,51 +422,111 @@
         ];
 
         $(document).ready(function() {
-            $('#rekapTable').DataTable();
-
+            $('#rekapTable').DataTable({
+                columnDefs: [{
+                    targets: [3, 4, 5, 6, 7, 8, 9], // kolom ke-4 sampai ke-10
+                    className: 'text-start' // bootstrap class untuk left-align
+                }]
+            });
             $("#excelFile").on("change", function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
+                const files = e.target.files;
+                if (!files.length) return;
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {
-                        type: "array"
-                    });
+                // Buat variabel penampung
+                let dataAbsensi = [];
+                let dataUangMakan = [];
+                let dataTunjangan = [];
 
-                    // Sheet pertama
-                    const sheetName = workbook.SheetNames[0];
-                    const sheet = workbook.Sheets[sheetName];
+                let filesLoaded = 0;
 
-                    // Konversi ke array of objects
-                    const jsonData = XLSX.utils.sheet_to_json(sheet, {
-                        header: 1, // Pakai header:1 untuk debugging
-                        defval: "", // Agar sel kosong tetap muncul
-                    });
-
-                    // Jika kamu ingin parsing ke object dengan key dari baris pertama:
-                    const headers = jsonData[0];
-                    const rows = jsonData.slice(1).map(row => {
-                        let obj = {};
-                        headers.forEach((key, i) => {
-                            obj[key] = row[i];
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {
+                            type: "array"
                         });
-                        return obj;
-                    });
 
-                    console.log(rows);
+                        const sheetName = workbook.SheetNames[0];
+                        const sheet = workbook.Sheets[sheetName];
 
-                    const cekduplikat = hapusDuplikatAbsensi(rows);
-                    // console.log("cekdata", cekdata);
+                        const jsonData = XLSX.utils.sheet_to_json(sheet, {
+                            header: 1,
+                            defval: "",
+                        });
+
+                        const headers = jsonData[0];
+                        const rows = jsonData.slice(1).map(row => {
+                            let obj = {};
+                            headers.forEach((key, i) => {
+                                obj[key] = row[i];
+                            });
+                            return obj;
+                        });
+
+                        // Deteksi berdasarkan nama file
+                        const filename = file.name.toLowerCase();
+
+                        if (filename.includes("kehadiran")) {
+                            dataAbsensi = rows;
+                        } else if (filename.includes("uang makan")) {
+                            dataUangMakan = rows;
+                        } else if (filename.includes("tukin")) {
+                            dataTunjangan = rows;
+                        }
+
+                        filesLoaded++;
+                        // Jalankan setelah semua file selesai dibaca
+                        if (filesLoaded === files.length) {
+                            prosesSemuaFile(dataAbsensi, dataUangMakan, dataTunjangan);
+                        }
+                    };
+
+                    reader.readAsArrayBuffer(file);
+                });
+            });
+
+
+
+            function prosesSemuaFile(dataAbsensi, dataUangMakan, dataTunjangan) {
+                console.log("ABSENSI:", dataAbsensi);
+                console.log("UANG MAKAN:", dataUangMakan);
+                console.log("TUNJANGAN:", dataTunjangan);
+
+                // Proses absensi
+                if (dataAbsensi.length > 0) {
+                    const cekduplikat = hapusDuplikatAbsensi(dataAbsensi);
+                    if (cekduplikat.duplikat.length > 0) {
+                        generateModalDuplikat(cekduplikat.duplikat);
+                    }
+
+                    rekapHariKerjaDanLibur(cekduplikat.unique);
+                    formatBulanTahunDariData(cekduplikat.unique);
+
                     dataPegawai = prosesDanGroupAbsensi(cekduplikat.unique);
                     dataPegawai = urutkanPegawai(dataPegawai);
                     inisialisasiRekap(dataPegawai);
-                    // $("#output").text(JSON.stringify(rows, null, 2));
-                };
+                }
 
-                reader.readAsArrayBuffer(file);
-            });
+                // Proses uang makan
+                if (dataUangMakan.length > 0) {
+                    // TODO: proses uang makan
+                    console.log("Proses uang makan di sini");
+                    generateTableUangMakan(dataUangMakan);
+
+                    //handel rekap uang makan
+                    let datamerge = joinUangMakanDenganAbsensi(dataPegawai, dataUangMakan);
+                    console.log("datamerge", datamerge);
+                    hasilrekapuangmakan = mappingDataAbsensi(datamerge);
+                    console.log("hasilrekapuangmakan", hasilrekapuangmakan);
+                }
+
+                // Proses tunjangan
+                if (dataTunjangan.length > 0) {
+                    // TODO: proses tunjangan
+                    console.log("Proses tunjangan di sini");
+                }
+            }
 
 
 
@@ -157,9 +538,10 @@
 
         });
 
+
         function prosesDanGroupAbsensi(data) {
             const grouped = {};
-
+            let forDetailMASUK_SAAT_LIBUR = [];
             data.forEach(item => {
                 const {
                     NAMA,
@@ -209,7 +591,10 @@
                 if (isHariLibur) {
                     grouped[key].libur.push(item);
                     const adaAbsen = item["ABSEN MASUK"] || item["ABSEN PULANG"];
-                    if (adaAbsen) grouped[key].masukSaatLibur.push(item);
+                    if (adaAbsen) {
+                        grouped[key].masukSaatLibur.push(item);
+                        forDetailMASUK_SAAT_LIBUR.push(item);
+                    };
                     return;
                 }
 
@@ -248,10 +633,17 @@
                 }
 
                 if (isTelat) grouped[key].terlambat.push(item);
-                if (isAbsenSekali) grouped[key].absenSekali.push(item);
-                if (isTanpaKeterangan) grouped[key].tanpaKeterangan.push(item);
+                if (isAbsenSekali) {
+                    dataExportAbsensiSekali.push(item);
+                    grouped[key].absenSekali.push(item)
+                };
+                if (isTanpaKeterangan) {
+                    dataExportTanpaKeterangan.push(item);
+                    grouped[key].tanpaKeterangan.push(item);
+                };
             });
-
+            //untuk rekap yang masuk hari libur
+            if (forDetailMASUK_SAAT_LIBUR.length > 0) generateModalabsen_libur(forDetailMASUK_SAAT_LIBUR);
             return Object.values(grouped);
         }
     </script>
@@ -287,9 +679,17 @@
         ];
 
         function inisialisasiRekap(data) {
+            if ($.fn.DataTable.isDataTable('#rekapTable')) {
+                $('#rekapTable').DataTable().clear().destroy();
+            }
             let newData = [];
             console.log(data);
-            const table = $('#rekapTable').DataTable();
+            const table = $('#rekapTable').DataTable({
+                columnDefs: [{ // kolom ke-4 sampai ke-10
+                    targets: [3, 4, 5, 6, 7, 8, 9],
+                    className: 'dt-body-right' // Bawaan DataTables untuk align right
+                }]
+            });
             table.clear(); // reset tabel jika sudah pernah diisi
             let no_table = 1;
             data.forEach((pegawai, index) => {
@@ -301,24 +701,30 @@
                 ];
                 table.row.add(row);
                 newData.push({
+                    no_table,
                     NAMA: pegawai.NAMA,
                     NIP: pegawai.NIP,
                     H_MASUK: pegawai.masukKerja.length,
                     TELAT_CEPAT_PULANG: pegawai.terlambat.length,
                     ABSEN_SEKALI: pegawai.absenSekali.length,
                     DINAS: pegawai.dinas.length,
+                    CUTI: pegawai.cuti.length,
                     TANPA_KETERANGAN: pegawai.tanpaKeterangan.length,
                     MASUK_SAAT_LIBUR: pegawai.masukSaatLibur.length
                 });
+
+
             });
-            console.log("data", newData);
+            untukExportRekap = newData;
             table.draw();
+
+
         }
 
         function renderClickable(array, index, key) {
             const jumlah = array.length;
             return jumlah > 0 ?
-                `<span class="clickable" data-index="${index}" data-key="${key}">${jumlah}</span>` :
+                `<span class="clickable p-1" data-index="${index}" data-key="${key}">${jumlah}</span>` :
                 "0";
         }
 
@@ -345,16 +751,7 @@
           </tr>
         </thead>
         <tbody>
-          ${data.map(row => `
-                                                                                                                                                                                                                                                                    <tr>
-                                                                                                                                                                                                                                                                        <td>${no_urut++}</td>
-                                                                                                                                                                                                                                                                        <td>${row.TANGGAL || "-"}</td>
-                                                                                                                                                                                                                                                                        <td>${row.HARI || "-"}</td>
-                                                                                                                                                                                                                                                                        <td>${row["ABSEN MASUK"] || "-"}</td>
-                                                                                                                                                                                                                                                                        <td>${row["ABSEN PULANG"] || "-"}</td>
-                                                                                                                                                                                                                                                                        <td>${row["JENIS TUGAS"] || "-"}</td>
-                                                                                                                                                                                                                                                                        <td>${row["KETERANGAN"] || row["KETERANGAN 2"]}</td>
-                                                                                                                                                                                                                                                                    </tr>`).join('')} 
+          ${data.map(row => `<tr><td>${no_urut++}</td> <td>${row.TANGGAL || "-"}</td><td>${row.HARI || "-"}</td> <td>${row["ABSEN MASUK"] || "-"}</td><td>${row["ABSEN PULANG"] || "-"}</td> <td>${row["JENIS TUGAS"] || "-"}</td><td>${row["KETERANGAN"] || row["KETERANGAN 2"]}</td> </tr>`).join('')} 
         </tbody>
       </table>
     `;
@@ -427,6 +824,406 @@
                 unique,
                 duplikat
             };
+        }
+
+        function rekapHariKerjaDanLibur(rows) {
+
+            // Hanya ambil satu data per tanggal (untuk efisiensi)
+            const dataPerTanggal = {};
+
+            rows.forEach(row => {
+                const tanggal = row.TANGGAL?.split(' ')[0];
+                if (!tanggal) return;
+                if (!dataPerTanggal[tanggal]) {
+                    dataPerTanggal[tanggal] = {
+                        tanggal,
+                        hari: row.HARI,
+                        libur: row.LIBUR?.trim() || ""
+                    };
+                }
+            });
+
+            // Hasil akhir
+            const liburResmi = [];
+            let totalHariKerja5 = 0;
+            let totalHariKerja6 = 0;
+            let totalLibur = 0;
+
+            Object.values(dataPerTanggal).forEach(({
+                tanggal,
+                hari,
+                libur
+            }) => {
+                const hariLower = hari?.toLowerCase();
+
+                const isMinggu = hariLower === "minggu";
+                const isSabtu = hariLower === "sabtu";
+                const isSeninSampaiSabtu = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu"].includes(
+                    hariLower);
+
+                if (libur && isSeninSampaiSabtu) {
+                    liburResmi.push({
+                        tanggal,
+                        hari,
+                        alasan: libur
+                    });
+                    totalLibur++;
+                }
+
+                // Hitung hari kerja
+                const isLibur5 = isMinggu || (isSabtu) || (libur && isSeninSampaiSabtu);
+                const isLibur6 = isMinggu || (libur && isSeninSampaiSabtu);
+
+                if (!isLibur5) totalHariKerja5++;
+                if (!isLibur6) totalHariKerja6++;
+            });
+
+
+            //hari_kerja5
+            $("#hari_kerja5").text(`${totalHariKerja5} Hari`);
+            //hari_kerja6
+            $("#hari_kerja6").text(`${totalHariKerja6} Hari`);
+            $("#total_hari_libur").text(liburResmi.length);
+
+            //masukan liburResmi tbody_hari_libur 
+            $("#tbody_hari_libur").html("");
+            liburResmi.forEach((item, index) => {
+                $("#tbody_hari_libur").append(`
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.tanggal}</td>
+                        <td>${item.hari}</td>
+                        <td>${item.alasan}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function generateModalDuplikat(data) {
+            $("#total_duplikat").text(data.length);
+            $("#tbody_duplikat").html("");
+            data.forEach((item, index) => {
+                $("#tbody_duplikat").append(`
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.NAMA}</td>
+                        <td>${item.NIP}</td>
+                        <td>${item.TANGGAL}</td>
+                        <td>${item.HARI}</td>
+                        <td>${item["ABSEN MASUK"]}</td>
+                        <td>${item["ABSEN PULANG"]}</td>
+                        <td>${item["JENIS TUGAS"]}</td>
+                        <td>${item["KETERANGAN"]}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function generateModalabsen_libur(data) {
+
+            $("#total_masuk_libur").text(data.length);
+            $("#tbody_absen_libur").html("");
+            data.forEach((item, index) => {
+                $("#tbody_absen_libur").append(`
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.NAMA}</td>
+                        <td>${item.NIP}</td>
+                        <td>${item.TANGGAL}</td>
+                        <td>${item.HARI}</td>
+                        <td>${item["ABSEN MASUK"]}</td>
+                        <td>${item["ABSEN PULANG"]}</td>
+                        <td>${item.LIBUR}</td>
+                    </tr>
+                `);
+            });
+        }
+        $(document).ready(function() {
+            $('#btn_tinjau_libur').click(function() {
+                $('#modal_hari_libur').modal('show');
+            });
+            $('#btn_tinjau_duplikat').click(function() {
+                $('#modal_duplikat').modal('show');
+            });
+            $('#btn_tinjau_masuk_libur').click(function() {
+                $('#modal_absen_libur').modal('show');
+            });
+        });
+
+        function formatBulanTahunDariData(rows) {
+            if (!rows.length) return "";
+
+            const tanggal = rows[0].TANGGAL?.split(" ")[0]; // Ambil bagian '2025-06-01'
+            if (!tanggal) return "";
+
+            const [tahun, bulan] = tanggal.split("-");
+            const namaBulan = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+
+            bulanTahun = `${namaBulan[parseInt(bulan) - 1].toUpperCase()} ${tahun}`;
+            $(".ket_tanggal").text(bulanTahun);
+        }
+    </script>
+    <script>
+        // untuk uang mmakan
+        let table_rekap_uang_makan;
+
+        const formatRupiah = value => "Rp " + value.toLocaleString("id-ID");
+
+        $(document).ready(function() {
+            // Inisialisasi kosong
+            table_rekap_uang_makan = $('#table_rekap_uang_makan').DataTable({
+                data: [],
+                // responsive: true,
+                autoWidth: true,
+                columns: [{
+                        title: "No",
+                        data: null,
+                        className: "text-center",
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1 + meta.settings._iDisplayStart;
+                        }
+                    },
+                    {
+                        data: 'NIP'
+                    },
+                    {
+                        data: 'NAMA'
+                    },
+                    {
+                        data: 'GOL/RUANG'
+                    },
+                    {
+                        data: 'HARI MASUK'
+                    },
+                    {
+                        data: 'UANG MAKAN',
+                        render: data => formatRupiah(data)
+                    },
+                    {
+                        data: 'PPH',
+                        render: data => formatRupiah(data)
+                    },
+                    {
+                        data: 'JUMLAH BERSIH',
+                        render: data => formatRupiah(data)
+                    },
+                    {
+                        data: 'STATUS PEGAWAI'
+                    },
+                    // {
+                    //     data: 'SATKER_2'
+                    // },
+                    // {
+                    //     data: 'SATKER_3'
+                    // }
+                ]
+            });
+        });
+
+        function generateTableUangMakan(data) {
+            let afterorder = urutkanPegawai(data);
+            table_rekap_uang_makan.clear().rows.add(afterorder).draw();
+        }
+    </script>
+
+    <script>
+        //btn_export click
+        $('#btn_export').click(function() {
+            ExportToExcel()
+        })
+        $('#btn_exp_uang_makan').click(function() {
+            Exportexceluangmakan()
+        })
+
+        function Exportexceluangmakan() {
+            if (hasilrekapuangmakan.length == 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Data Kosong',
+                })
+                return
+            }
+
+            // return
+            $.ajax({
+                url: '/exportRekapUangMakan',
+                type: 'POST',
+                data: JSON.stringify({
+                    data: hasilrekapuangmakan,
+                    bulanTahun: bulanTahun,
+                }),
+                contentType: 'application/json',
+                xhrFields: {
+                    responseType: 'blob' // Penting untuk menerima file
+                },
+                success: function(response) {
+                    // Buat link download
+                    const url = window.URL.createObjectURL(response);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Rekap_Uang_Makan_${bulanTahun}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: xhr.responseJSON.message,
+                    })
+                }
+            });
+        }
+
+        function ExportToExcel() {
+            if (untukExportRekap.length == 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Data Kosong',
+                })
+                return
+            }
+
+            // return
+            $.ajax({
+                url: '/exportRekap',
+                type: 'POST',
+                data: JSON.stringify({
+                    data: untukExportRekap,
+                    bulanTahun: bulanTahun,
+                    dataExportAbsensiSekali: dataExportAbsensiSekali,
+                    dataExportTanpaKeterangan: dataExportTanpaKeterangan
+                }),
+                contentType: 'application/json',
+                xhrFields: {
+                    responseType: 'blob' // Penting untuk menerima file
+                },
+                success: function(response) {
+                    // Buat link download
+                    const url = window.URL.createObjectURL(response);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Rekap_Absensi.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: xhr.responseJSON.message,
+                    })
+                }
+            });
+        }
+
+
+        function joinUangMakanDenganAbsensi(dataAbsensi, dataUangMakan) {
+            const hasilGabungan = [];
+
+            dataAbsensi.forEach(pegawai => {
+                const tanggalPertama = pegawai.detail?.[0]?.TANGGAL;
+
+                if (!tanggalPertama) {
+                    console.warn(`Data absensi kosong untuk NIP ${pegawai.NIP}`);
+                    return;
+                }
+
+                const tahunAbsen = new Date(tanggalPertama).getFullYear();
+                const bulanAbsen = new Date(tanggalPertama).getMonth() + 1;
+
+                // Cari data uang makan berdasarkan NIP
+                const uang = dataUangMakan.find(um => um.NIP === pegawai.NIP);
+
+                if (uang) {
+                    const tahunUM = parseInt(uang.TAHUN);
+                    const bulanUM = parseInt(uang.BULAN);
+
+                    if (tahunUM !== tahunAbsen || bulanUM !== bulanAbsen) {
+                        alert(
+                            `❗ Perhatian: Data tahun/bulan tidak cocok untuk NIP ${pegawai.NIP} (${pegawai.NAMA})\nAbsensi: ${tahunAbsen}-${bulanAbsen}, Uang Makan: ${tahunUM}-${bulanUM}`
+                        );
+                    }
+
+                    hasilGabungan.push({
+                        ...pegawai,
+                        "HARI MASUK": uang["HARI MASUK"] ?? null,
+                        "UANG MAKAN": uang["UANG MAKAN"] ?? null,
+                        "PPH": uang["PPH"] ?? null,
+                        "JUMLAH BERSIH": uang["JUMLAH BERSIH"] ?? null
+                    });
+                } else {
+                    // Tidak ditemukan data uang makan
+                    hasilGabungan.push({
+                        ...pegawai,
+                        "HARI MASUK": null,
+                        "UANG MAKAN": null,
+                        "PPH": null,
+                        "JUMLAH BERSIH": null
+                    });
+                }
+            });
+
+            return hasilGabungan;
+        }
+
+        function mappingDataAbsensi(dataAbsensi) {
+            return dataAbsensi.map(pegawai => {
+                const nip = pegawai.NIP;
+                const nama = pegawai.NAMA;
+                const hariMasuk = pegawai["HARI MASUK"] || 0;
+                const jumlahKotor = pegawai["UANG MAKAN"] || 0;
+                const potonganPajak = pegawai["PPH"] || 0;
+                const totalBersih = pegawai["JUMLAH BERSIH"] || 0;
+
+                const uangPerHari = hariMasuk > 0 ? (jumlahKotor - potonganPajak) / hariMasuk : 0;
+
+                const detail = (pegawai.detail || []).map(item => {
+                    const absenMasuk = item["ABSEN MASUK"]?.trim();
+                    const absenPulang = item["ABSEN PULANG"]?.trim();
+
+                    const adaAbsen = absenMasuk || absenPulang;
+                    const uangHariIni = adaAbsen ? uangPerHari : null;
+
+                    const keteranganGabungan = [
+                            item.LIBUR?.trim(),
+                            item.KETERANGAN?.trim(),
+                            item["KETERANGAN 2"]?.trim()
+                        ]
+                        .filter(Boolean)
+                        .join(" / ");
+
+                    return {
+                        tanggal: item.TANGGAL,
+                        hari: item.HARI,
+                        jam_masuk: item["JAM MASUK"],
+                        absen_masuk: absenMasuk,
+                        jam_pulang: item["JAM PULANG"],
+                        absen_pulang: absenPulang,
+                        uang_per_hari: uangHariIni,
+                        keterangan: keteranganGabungan || "-"
+                    };
+                });
+
+                return {
+                    nip,
+                    nama,
+                    jumlah_kotor: jumlahKotor,
+                    potongan_pajak: potonganPajak,
+                    total_bersih: totalBersih,
+                    detail
+                };
+            });
         }
     </script>
 @endsection

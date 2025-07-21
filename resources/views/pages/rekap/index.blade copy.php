@@ -6,7 +6,161 @@
     <link rel="stylesheet" href="{{ asset('templates/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('templates/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+
+    <style>
+        .db-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+            background: white;
+        }
+
+        .db-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .db-card-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .db-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .db-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #4a4a4a;
+        }
+
+        .db-card-body {
+            padding: 0 20px 15px;
+        }
+
+        .db-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .db-card-desc {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 5px 0 0;
+        }
+
+        .db-card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Color Variants */
+        .db-primary .db-card-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .db-warning .db-card-icon {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .db-danger .db-card-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .db-info .db-card-icon {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+
+        .db-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .db-dark {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .db-light {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        .db-card-link {
+            color: #4a4a4a;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .db-card-link:hover {
+            color: #007bff;
+        }
+
+        .db-card-link i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .db-card-link:hover i {
+            transform: translateX(3px);
+        }
+
+
+
+        .db-attendance-detail {
+            display: flex;
+            gap: 8px;
+        }
+
+        .db-workday-vertical {
+            margin: 10px 0;
+        }
+
+        .db-workday-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .db-workday-days {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .db-workday-count {
+            font-weight: 600;
+            color: #4a4a4a;
+        }
+    </style>
 @endsection
+
 
 @section('content')
     <div class="container-fluid">
@@ -15,140 +169,151 @@
                 <h3 class="mb-4">Upload Absensi Excel</h3>
                 <input type="file" id="excelFile" accept=".xlsx" class="form-control mb-3">
 
-                <div id="rekapSection" class="d-none">
-                    <h5>Ringkasan Rekapitulasi</h5>
-                    <table class="table table-bordered" id="rekapTable">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama</th>
-                                <th>NIP</th>
-                                <th>Jabatan</th>
-                                <th>Hari Hadir</th>
-                                <th>Tanpa Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
 
-                    <h5>Detail Absensi Pegawai</h5>
-                    <div id="detailList"></div>
-
-                    <button id="exportBtn" class="btn btn-success mt-3">Download Rekap Excel</button>
-                </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="container mt-5">
-                <h3 class="mb-4 text-center">Rekapitulasi Absensi Pegawai</h3>
-                <div class="row">
-                    <div class="col-12">
-                        <table class="table table-bordered table-hover bg-white shadow-sm">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Nama</th>
-                                    <th>NIP</th>
-                                    <th>Hari Masuk</th>
-                                    <th>Telat/Cepat Pulang</th>
-                                    <th>Absen Sekali</th>
-                                    <th>Dinas</th>
-                                    <th>Tanpa Keterangan</th>
-                                    <th>Masuk Saat Libur</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rekap-body"></tbody>
-                        </table>
+            <!-- Hari Kerja Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-primary">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="db-card-title">Hari Kerja</h3>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow-sm border-0">
-                            <div
-                                class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Rekap Absensi</h5>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <i class="fas fa-cog"></i> Options
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="#"><i
-                                                class="fas fa-file-export mr-2"></i>Export</a>
-                                        <a class="dropdown-item" href="#"><i class="fas fa-filter mr-2"></i>Filter</a>
-                                    </div>
-                                </div>
+                    <div class="db-card-body">
+                        <div class="db-workday-vertical">
+                            <div class="db-workday-row">
+                                <span class="db-workday-days">5 Hari/Minggu:</span>
+                                <span class="db-workday-count" id="hari_kerja5">0</span>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th class="align-middle border-top-0">Nama</th>
-                                                <th class="align-middle border-top-0">NIP</th>
-                                                <th class="align-middle border-top-0 text-center">Hari Masuk</th>
-                                                <th class="align-middle border-top-0 text-center">Telat/Cepat Pulang</th>
-                                                <th class="align-middle border-top-0 text-center">Absen Sekali</th>
-                                                <th class="align-middle border-top-0 text-center">Dinas</th>
-                                                <th class="align-middle border-top-0 text-center">Tanpa Keterangan</th>
-                                                <th class="align-middle border-top-0 text-center">Masuk Saat Libur</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="rekap-body" class="bg-white">
-                                            <!-- Table rows will be inserted here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                                <div class="text-muted small">
-                                    Showing <span id="showing-count">1</span> to <span id="total-count">10</span> of <span
-                                        id="total-entries">50</span> entries
-                                </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                        </li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                            <div class="db-workday-row">
+                                <span class="db-workday-days">6 Hari/Minggu:</span>
+                                <span class="db-workday-count" id="hari_kerja6">0</span>
                             </div>
                         </div>
+                        <p class="db-card-desc">Total hari kerja bulan <span class="ket_tanggal"></span></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Detail Absensi</h5>
-                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <!-- Libur Nasional Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-warning">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-umbrella-beach"></i>
                         </div>
-                        <div class="modal-body">
-                            <div id="modalContent" class="table-responsive">
-                                <!-- Isi detail di sini -->
-                                <div class="text-center my-4 text-muted" id="loadingSpinner">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="sr-only">Memuat...</span>
-                                    </div>
-                                    <p>Memuat detail...</p>
-                                </div>
-                            </div>
+                        <h3 class="db-card-title">Libur Nasional</h3>
+                    </div>
+                    <div class="db-card-body">
+                        <h2 class="db-card-value">3</h2>
+                        <p class="db-card-desc">hari bulan <span class="ket_tanggal"></span></p>
+                    </div>
+
+                    {{-- <div class="db-card-footer">
+                        <a href="#" class="db-card-link">Tinjau Data <i class="fas fa-chevron-right"></i></a>
+                    </div> --}}
+                </div>
+            </div>
+
+            <!-- Data Duplikat Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-danger">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-clone"></i>
                         </div>
+                        <h3 class="db-card-title">Data Duplikat</h3>
+                    </div>
+                    <div class="db-card-body">
+                        <h2 class="db-card-value">14</h2>
+                        <p class="db-card-desc">entri terdeteksi</p>
+                    </div>
+                    <div class="db-card-footer">
+                        <a href="#" class="db-card-link">Tinjau Data <i class="fas fa-chevron-right"></i></a>
                     </div>
                 </div>
             </div>
 
+            <!-- Masuk Saat Libur Card -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4">
+                <div class="db-card db-info">
+                    <div class="db-card-header">
+                        <div class="db-card-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="db-card-title">Masuk Saat Libur</h3>
+                    </div>
+                    <div class="db-card-body">
+                        <h2 class="db-card-value">0</h2>
+                        <p class="db-card-desc">Pegawai</p>
+                    </div>
+                    <div class="db-card-footer">
+                        <div class="db-attendance-detail">
+                            <span class="db-badge db-dark">5 OT</span>
+                            <span class="db-badge db-light">3 Regular</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="card  w-100">
+                <div class="card-header border-0">
+                    <h3 class="card-title">Rekapitulasi Absensi Pegawai <span class="ket_tanggal"></span></h3>
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-tool btn-sm bg-info">
+                            <i class="fas fa-download"></i>
+                            <span>Export</span>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="rekapTable" class="table table-bordered table-hover bg-white shadow-sm">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th class="w-25">Nama</th>
+                                        <th>NIP</th>
+                                        <th>Hari Masuk</th>
+                                        <th>Telat/Cepat Pulang</th>
+                                        <th>Absen Sekali</th>
+                                        <th>Cuti</th>
+                                        <th>Dinas/lainnya</th>
+                                        <th>Tanpa Keterangan</th>
+                                        <th>Masuk Saat Libur</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="detailModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Detail Absensi</h5>
+                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="modalContent" class="table-responsive"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 @endsection
@@ -172,45 +337,71 @@
 @section('scripts')
     <script>
         var dataPegawai = [];
-        $("#excelFile").on("change", function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        const nip6HariKerja = [
+            "196812312005011067",
+            "197002102006042001",
+            "198007132014101003"
+        ];
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {
-                    type: "array"
-                });
+        $(document).ready(function() {
+            $('#rekapTable').DataTable();
 
-                // Sheet pertama
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
+            $("#excelFile").on("change", function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
 
-                // Konversi ke array of objects
-                const jsonData = XLSX.utils.sheet_to_json(sheet, {
-                    header: 1, // Pakai header:1 untuk debugging
-                    defval: "", // Agar sel kosong tetap muncul
-                });
-
-                // Jika kamu ingin parsing ke object dengan key dari baris pertama:
-                const headers = jsonData[0];
-                const rows = jsonData.slice(1).map(row => {
-                    let obj = {};
-                    headers.forEach((key, i) => {
-                        obj[key] = row[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {
+                        type: "array"
                     });
-                    return obj;
-                });
 
-                console.log(rows);
-                dataPegawai = prosesDanGroupAbsensi(rows);
-                console.log(dataPegawai);
-                renderTabel(dataPegawai);
-                // $("#output").text(JSON.stringify(rows, null, 2));
-            };
+                    // Sheet pertama
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
 
-            reader.readAsArrayBuffer(file);
+                    // Konversi ke array of objects
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, {
+                        header: 1, // Pakai header:1 untuk debugging
+                        defval: "", // Agar sel kosong tetap muncul
+                    });
+
+                    // Jika kamu ingin parsing ke object dengan key dari baris pertama:
+                    const headers = jsonData[0];
+                    const rows = jsonData.slice(1).map(row => {
+                        let obj = {};
+                        headers.forEach((key, i) => {
+                            obj[key] = row[i];
+                        });
+                        return obj;
+                    });
+
+                    console.log(rows);
+
+                    const cekduplikat = hapusDuplikatAbsensi(rows);
+                    const rekapkerja_libur = rekapHariKerjaDanLibur(cekduplikat
+                        .unique); //untuk total hari kerja dan libur
+                    console.log("rekapkerja_libur", rekapkerja_libur);
+                    formatBulanTahunDariData(cekduplikat.unique);
+
+                    dataPegawai = prosesDanGroupAbsensi(cekduplikat.unique);
+                    dataPegawai = urutkanPegawai(dataPegawai);
+                    inisialisasiRekap(dataPegawai);
+                    // $("#output").text(JSON.stringify(rows, null, 2));
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+
+
+
+            $('#rekapTable tbody').on('click', '.clickable', function() {
+                const index = $(this).data('index');
+                const key = $(this).data('key');
+                tampilkanDetail(index, key, dataPegawai);
+            });
+
         });
 
         function prosesDanGroupAbsensi(data) {
@@ -251,7 +442,14 @@
 
                 const hari = item.HARI;
                 const jenisTugas = item["JENIS TUGAS"]?.toLowerCase().trim() || "";
-                const isHariLibur = ["sabtu", "minggu"].includes(hari.toLowerCase()) || item.LIBUR?.trim() !== "";
+                // const isHariLibur = ["sabtu", "minggu"].includes(hari.toLowerCase()) || item.LIBUR?.trim() !== "";
+                const isHariSabtu = item.HARI?.toLowerCase() === "sabtu";
+                const isHariMinggu = item.HARI?.toLowerCase() === "minggu";
+                const liburNasional = item.LIBUR?.trim() !== "";
+                const is6Hari = nip6HariKerja.includes(item.NIP);
+
+                // ✅ Hanya pegawai 5 hari kerja yang libur di Sabtu
+                const isHariLibur = isHariMinggu || liburNasional || (isHariSabtu && !is6Hari);
 
                 grouped[key].detail.push(item);
 
@@ -267,7 +465,8 @@
                     return;
                 }
 
-                if (jenisTugas.includes("dinas")) {
+                // if (jenisTugas.includes("dinas")) {
+                if (jenisTugas !== "") { // saya tdk filter by kata dinas, karena ada dinas lainnya
                     grouped[key].dinas.push(item);
                     return;
                 }
@@ -304,65 +503,86 @@
         }
     </script>
     <script>
-        // Render Tabel Ringkasan
-        function renderTabel(data) {
-            const $body = $("#rekap-body");
-            $body.empty();
+        const kategoriKolom = [{
+                key: 'masukKerja',
+                label: 'Hari Masuk'
+            },
+            {
+                key: 'terlambat',
+                label: 'Telat/Cepat Pulang'
+            },
+            {
+                key: 'absenSekali',
+                label: 'Absen Sekali'
+            },
+            {
+                key: 'cuti',
+                label: 'Cuti'
+            },
+            {
+                key: 'dinas',
+                label: 'Dinas'
+            },
+            {
+                key: 'tanpaKeterangan',
+                label: 'Tanpa Keterangan'
+            },
+            {
+                key: 'masukSaatLibur',
+                label: 'Masuk Saat Libur'
+            }
+        ];
 
+        function inisialisasiRekap(data) {
+            let newData = [];
+            console.log(data);
+            const table = $('#rekapTable').DataTable();
+            table.clear(); // reset tabel jika sudah pernah diisi
+            let no_table = 1;
             data.forEach((pegawai, index) => {
-                const row = `
-      <tr>
-        <td>${pegawai.NAMA}</td>
-        <td>${pegawai.NIP}</td>
-        <td>${renderCount(pegawai.masukKerja, index, "masukKerja")}</td>
-        <td>${renderCount(pegawai.terlambat, index, "terlambat")}</td>
-        <td>${renderCount(pegawai.absenSekali, index, "absenSekali")}</td>
-        <td>${renderCount(pegawai.dinas, index, "dinas")}</td>
-        <td>${renderCount(pegawai.tanpaKeterangan, index, "tanpaKeterangan")}</td>
-        <td>${renderCount(pegawai.masukSaatLibur, index, "masukSaatLibur")}</td>
-      </tr>
-    `;
-                $body.append(row);
+                const row = [
+                    no_table++,
+                    pegawai.NAMA,
+                    pegawai.NIP,
+                    ...kategoriKolom.map(k => renderClickable(pegawai[k.key], index, k.key))
+                ];
+                table.row.add(row);
+                newData.push({
+                    NAMA: pegawai.NAMA,
+                    NIP: pegawai.NIP,
+                    H_MASUK: pegawai.masukKerja.length,
+                    TELAT_CEPAT_PULANG: pegawai.terlambat.length,
+                    ABSEN_SEKALI: pegawai.absenSekali.length,
+                    DINAS: pegawai.dinas.length,
+                    TANPA_KETERANGAN: pegawai.tanpaKeterangan.length,
+                    MASUK_SAAT_LIBUR: pegawai.masukSaatLibur.length
+                });
             });
+            console.log("data", newData);
+            table.draw();
         }
 
-        // Fungsi untuk render jumlah dengan link klik jika > 0
-        function renderCount(arr, index, kategori) {
-            const count = arr.length;
-            return count > 0 ?
-                `<span class="clickable" onclick="showDetail(${index}, '${kategori}')">${count}</span>` :
+        function renderClickable(array, index, key) {
+            const jumlah = array.length;
+            return jumlah > 0 ?
+                `<span class="clickable" data-index="${index}" data-key="${key}">${jumlah}</span>` :
                 "0";
         }
 
-        // Tampilkan Detail di Modal
-        function showDetail(index, kategori) {
+        function tampilkanDetail(index, key, dataPegawai) {
             const pegawai = dataPegawai[index];
-            const data = pegawai[kategori];
+            const data = pegawai[key];
+            let no_urut = 1;
+            let html = `<h5>${pegawai.NAMA} - ${labelKategori(key)}</h5>`;
+            if (!data.length) {
+                html += `<p class="text-muted">Tidak ada data</p>`;
+            } else {
 
-            // Tampilkan loading spinner dulu
-            $("#modalContent").html(`
-    <div class="text-center my-4 text-muted">
-      <div class="spinner-border text-primary" role="status">
-        <span class="sr-only">Memuat...</span>
-      </div>
-      <p>Memuat detail...</p>
-    </div>
-  `);
-
-            // Tampilkan modal terlebih dahulu
-            $("#detailModal").modal("show");
-
-            // Setelah modal terbuka, render isinya dengan delay kecil
-            setTimeout(() => {
-                let html = `<h5>${pegawai.NAMA} - ${kategori.replace(/([A-Z])/g, ' $1')}</h5>`;
-
-                if (data.length === 0) {
-                    html += `<p class="text-muted">Tidak ada data</p>`;
-                } else {
-                    html += `
+                html += `
       <table class="table table-sm table-bordered mt-3">
         <thead class="thead-light">
           <tr>
+            <th>No</th>
             <th>Tanggal</th>
             <th>Hari</th>
             <th>Absen Masuk</th>
@@ -372,25 +592,158 @@
           </tr>
         </thead>
         <tbody>
-          ${data.map(row => `
-                                <tr>
-                                  <td>${row.TANGGAL?.split(" ")[0]}</td>
-                                  <td>${row.HARI}</td>
-                                  <td>${row["ABSEN MASUK"] || "-"}</td>
-                                  <td>${row["ABSEN PULANG"] || "-"}</td>
-                                  <td>${row["JENIS TUGAS"] || "-"}</td>
-                                  <td>${row["KETERANGAN 2"] || "-"}</td>
-                                </tr>
-                              `).join('')}
+          ${data.map(row => `<tr><td>${no_urut++}</td> <td>${row.TANGGAL || "-"}</td><td>${row.HARI || "-"}</td> <td>${row["ABSEN MASUK"] || "-"}</td><td>${row["ABSEN PULANG"] || "-"}</td> <td>${row["JENIS TUGAS"] || "-"}</td><td>${row["KETERANGAN"] || row["KETERANGAN 2"]}</td> </tr>`).join('')} 
         </tbody>
-      </table>`;
-                }
+      </table>
+    `;
+            }
 
-                $("#modalContent").html(html);
-            }, 250); // Waktu tunggu minimal untuk UX yang smooth
+            $('#modalContent').html(html);
+            $('#detailModal').modal('show');
         }
 
+        function labelKategori(key) {
+            const label = kategoriKolom.find(k => k.key === key);
+            return label ? label.label : key;
+        }
 
-        // Inisialisasi
+        function urutkanPegawai(dataPegawai) {
+            const prioritasNIP = [
+                "196812311998031016",
+                "197101011997032002",
+                "199503012020122016",
+                "197206182014111001",
+                "197802062014121001",
+                "198310102009121007",
+                "196611182005011002",
+                "196812312005011069",
+                "197611282007101001",
+                "197405182006041019",
+                "196912312014111018",
+                "198002032009121001"
+            ];
+
+            // Bagi dua kelompok: prioritas dan non-prioritas
+            const pejabat = [];
+            const lainnya = [];
+
+            dataPegawai.forEach(p => {
+                if (prioritasNIP.includes(p.NIP)) {
+                    pejabat.push(p);
+                } else {
+                    lainnya.push(p);
+                }
+            });
+
+            // Urutkan pejabat sesuai urutan prioritas
+            pejabat.sort((a, b) => {
+                return prioritasNIP.indexOf(a.NIP) - prioritasNIP.indexOf(b.NIP);
+            });
+
+            // Urutkan sisanya berdasarkan nama
+            lainnya.sort((a, b) => a.NAMA.localeCompare(b.NAMA));
+
+            return [...pejabat, ...lainnya];
+        }
+
+        function hapusDuplikatAbsensi(rows) {
+            const seen = new Set();
+            const unique = [];
+            const duplikat = [];
+
+            rows.forEach(row => {
+                const key = `${row.NIP}_${row.TANGGAL}_${row.HARI}`.trim();
+                if (seen.has(key)) {
+                    duplikat.push(row); // simpan data duplikat untuk referensi
+                } else {
+                    seen.add(key);
+                    unique.push(row);
+                }
+            });
+
+            return {
+                unique,
+                duplikat
+            };
+        }
+
+        function rekapHariKerjaDanLibur(rows) {
+
+            // Hanya ambil satu data per tanggal (untuk efisiensi)
+            const dataPerTanggal = {};
+
+            rows.forEach(row => {
+                const tanggal = row.TANGGAL?.split(' ')[0];
+                if (!tanggal) return;
+                if (!dataPerTanggal[tanggal]) {
+                    dataPerTanggal[tanggal] = {
+                        tanggal,
+                        hari: row.HARI,
+                        libur: row.LIBUR?.trim() || ""
+                    };
+                }
+            });
+
+            // Hasil akhir
+            const liburResmi = [];
+            let totalHariKerja5 = 0;
+            let totalHariKerja6 = 0;
+            let totalLibur = 0;
+
+            Object.values(dataPerTanggal).forEach(({
+                tanggal,
+                hari,
+                libur
+            }) => {
+                const hariLower = hari?.toLowerCase();
+
+                const isMinggu = hariLower === "minggu";
+                const isSabtu = hariLower === "sabtu";
+                const isSeninSampaiSabtu = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu"].includes(
+                    hariLower);
+
+                if (libur && isSeninSampaiSabtu) {
+                    liburResmi.push({
+                        tanggal,
+                        hari,
+                        alasan: libur
+                    });
+                    totalLibur++;
+                }
+
+                // Hitung hari kerja
+                const isLibur5 = isMinggu || (isSabtu) || (libur && isSeninSampaiSabtu);
+                const isLibur6 = isMinggu || (libur && isSeninSampaiSabtu);
+
+                if (!isLibur5) totalHariKerja5++;
+                if (!isLibur6) totalHariKerja6++;
+            });
+
+            // return {
+            //     liburResmi,
+            //     totalHariKerja5,
+            //     totalHariKerja6,
+            //     totalLibur
+            // };
+            //hari_kerja5
+            $("#hari_kerja5").text(`${totalHariKerja5} Hari`);
+            //hari_kerja6
+            $("#hari_kerja6").text(`${totalHariKerja6} Hari`);
+        }
+
+        function formatBulanTahunDariData(rows) {
+            if (!rows.length) return "";
+
+            const tanggal = rows[0].TANGGAL?.split(" ")[0]; // Ambil bagian '2025-06-01'
+            if (!tanggal) return "";
+
+            const [tahun, bulan] = tanggal.split("-");
+            const namaBulan = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+
+            $(".ket_tanggal").text(`${namaBulan[parseInt(bulan) - 1].toUpperCase()} ${tahun}`);
+        }
     </script>
 @endsection
