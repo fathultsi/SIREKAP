@@ -157,6 +157,9 @@
 
 @section('content')
     <div class="container pt-4">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <button onclick="previewSatuPegawai()" class="btn btn-warning">Preview Satu Pegawai</button>
         <div class="row">
             <div class="col-12">
                 <div class="card card-outline card-success">
@@ -337,7 +340,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card w-100">
-                                        <div class="card-header border-0">
+                                        {{-- <div class="card-header border-0">
                                             <h3 class="card-title">Rekapitulasi Uang Makan <span
                                                     class="ket_tanggal"></span></h3>
                                             <div class="card-tools">
@@ -345,6 +348,45 @@
                                                     <i class="fas fa-download"></i>
                                                     <span>Export</span>
                                                 </button>
+                                                <button id="btn_exp_uangmakan_zip" class="btn btn-tool btn-sm bg-info">
+                                                    <i class="fas fa-download"></i>
+                                                    <span>Export zip</span>
+                                                </button>
+                                                <div id="status" class="mt-3"></div>
+                                                <div style="width: 100%; background: #ddd; height: 20px;">
+                                                    <div id="progress-bar"
+                                                        style="width: 0%; height: 100%; background: #28a745;"></div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                        <div
+                                            class="card-header border-0 d-flex justify-content-between align-items-center flex-wrap">
+                                            <h3 class="card-title mb-2 mb-sm-0">
+                                                Rekapitulasi Uang Makan <span
+                                                    class="ket_tanggal text-muted font-weight-normal"></span>
+                                            </h3>
+
+                                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                                <button id="btn_exp_uang_makan"
+                                                    class="btn btn-sm btn-outline-primary mr-2 mb-2">
+                                                    <i class="fas fa-file-export"></i> Export
+                                                </button>
+                                                <button id="btn_exp_uangmakan_zip"
+                                                    class="btn btn-sm btn-outline-success mb-2">
+                                                    <i class="fas fa-file-archive"></i> Export ZIP
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="px-3 pb-3">
+                                            <div id="status" class="mb-2 text-info font-weight-bold">
+                                            </div>
+
+                                            <div class="progress" style="height: 20px;">
+                                                <div id="progress-bar" class="progress-bar bg-success" role="progressbar"
+                                                    style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                                                    aria-valuemax="100">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -805,13 +847,41 @@
             return [...pejabat, ...lainnya];
         }
 
+        // function hapusDuplikatAbsensi(rows) {
+        //     const seen = new Set();
+        //     const unique = [];
+        //     const duplikat = [];
+
+        //     console.log("rows", rows);
+
+        //     rows.forEach(row => {
+        //         const key = `${row.NIP}_${row.TANGGAL}_${row.HARI}`.trim();
+        //         if (seen.has(key)) {
+        //             duplikat.push(row); // simpan data duplikat untuk referensi
+        //         } else {
+        //             seen.add(key);
+        //             unique.push(row);
+        //         }
+        //     });
+
+        //     return {
+        //         unique,
+        //         duplikat
+        //     };
+        // }
         function hapusDuplikatAbsensi(rows) {
             const seen = new Set();
             const unique = [];
             const duplikat = [];
 
+            console.log("rows", rows);
+
             rows.forEach(row => {
+                // Potong TANGGAL menjadi hanya bagian tanggal (yyyy-mm-dd)
+                row.TANGGAL = row.TANGGAL.split(' ')[0];
+
                 const key = `${row.NIP}_${row.TANGGAL}_${row.HARI}`.trim();
+
                 if (seen.has(key)) {
                     duplikat.push(row); // simpan data duplikat untuk referensi
                 } else {
@@ -1038,6 +1108,9 @@
         $('#btn_exp_uang_makan').click(function() {
             Exportexceluangmakan()
         })
+        $('#btn_exp_uangmakan_zip').click(function() {
+            ExportZipUangMakan()
+        })
 
         function Exportexceluangmakan() {
             if (hasilrekapuangmakan.length == 0) {
@@ -1082,148 +1155,263 @@
             });
         }
 
-        function ExportToExcel() {
-            if (untukExportRekap.length == 0) {
+        function startPolling() {
+            let interval = setInterval(() => {
+                $.get('/export/rekap/progress', function(res) {
+                    let percent = (res.current / res.total) * 100;
+                    $('#progress-bar').css('width', percent + '%');
+                    $('#status').text(`📄 ${res.nama} (${res.current}/${res.total})`);
+
+                    if (res.current >= res.total) {
+                        clearInterval(interval);
+                        $('#status').html(
+                            `<a href="${res.download_url}" class="btn btn-success" download>
+                                    ✅ Download ZIP 
+                                </a>`
+                        );
+
+                        // Jika ada link download, tampilkan
+                        if (res.download_url) {
+                            // $('#download-link').html(
+                            //     `<a href="${res.download_url}" target="_blank" class="btn btn-success mt-2">⬇️ Download ZIP</a>`
+                            // );
+
+                        }
+                    }
+                });
+            }, 1000);
+        }
+
+        function ExportZipUangMakan() {
+            if (hasilrekapuangmakan.length == 0) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Oops...',
                     text: 'Data Kosong',
-                })
-                return
+                });
+                return;
             }
-
-            // return
+            $('#status').html('<span class="text-warning">🔄 Sedang diproses...</span>');
+            // startPolling();
+            // startPolling(); // ⬅️ MULAI POLLING DI SINI
             $.ajax({
-                url: '/exportRekap',
+                url: '/export/rekap-uang-makan',
                 type: 'POST',
                 data: JSON.stringify({
-                    data: untukExportRekap,
+                    data: hasilrekapuangmakan,
                     bulanTahun: bulanTahun,
-                    dataExportAbsensiSekali: dataExportAbsensiSekali,
-                    dataExportTanpaKeterangan: dataExportTanpaKeterangan
                 }),
                 contentType: 'application/json',
-                xhrFields: {
-                    responseType: 'blob' // Penting untuk menerima file
-                },
-                success: function(response) {
-                    // Buat link download
-                    const url = window.URL.createObjectURL(response);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'Rekap_Absensi.xlsx';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    a.remove();
+                success: function(res) {
+                    if (res.status === 'started') {
+                        $('#status').text('📤 Mulai proses ekspor...');
+
+                    } else if (res.download_url) {
+                        // fallback kalau tetap proses sinkron
+                        $('#status').html(`
+                            <a href="${res.download_url}" class="btn btn-success" download>
+                                ✅ Download Rekap
+                            </a>
+                        `);
+                    }
                 },
                 error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: xhr.responseJSON.message,
-                    })
+                    console.log(xhr);
+                    $('#status').text('❌ Gagal memproses');
                 }
             });
-        }
 
 
-        function joinUangMakanDenganAbsensi(dataAbsensi, dataUangMakan) {
-            const hasilGabungan = [];
 
-            dataAbsensi.forEach(pegawai => {
-                const tanggalPertama = pegawai.detail?.[0]?.TANGGAL;
 
-                if (!tanggalPertama) {
-                    console.warn(`Data absensi kosong untuk NIP ${pegawai.NIP}`);
-                    return;
+            function ExportToExcel() {
+                if (untukExportRekap.length == 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops...',
+                        text: 'Data Kosong',
+                    })
+                    return
                 }
 
-                const tahunAbsen = new Date(tanggalPertama).getFullYear();
-                const bulanAbsen = new Date(tanggalPertama).getMonth() + 1;
+                // return
+                $.ajax({
+                    url: '/exportRekap',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        data: untukExportRekap,
+                        bulanTahun: bulanTahun,
+                        dataExportAbsensiSekali: dataExportAbsensiSekali,
+                        dataExportTanpaKeterangan: dataExportTanpaKeterangan
+                    }),
+                    contentType: 'application/json',
+                    xhrFields: {
+                        responseType: 'blob' // Penting untuk menerima file
+                    },
+                    success: function(response) {
+                        // Buat link download
+                        const url = window.URL.createObjectURL(response);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'Rekap_Absensi.xlsx';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: xhr.responseJSON.message,
+                        })
+                    }
+                });
+            }
 
-                // Cari data uang makan berdasarkan NIP
-                const uang = dataUangMakan.find(um => um.NIP === pegawai.NIP);
 
-                if (uang) {
-                    const tahunUM = parseInt(uang.TAHUN);
-                    const bulanUM = parseInt(uang.BULAN);
+            function joinUangMakanDenganAbsensi(dataAbsensi, dataUangMakan) {
+                const hasilGabungan = [];
 
-                    if (tahunUM !== tahunAbsen || bulanUM !== bulanAbsen) {
-                        alert(
-                            `❗ Perhatian: Data tahun/bulan tidak cocok untuk NIP ${pegawai.NIP} (${pegawai.NAMA})\nAbsensi: ${tahunAbsen}-${bulanAbsen}, Uang Makan: ${tahunUM}-${bulanUM}`
-                        );
+                dataAbsensi.forEach(pegawai => {
+                    const tanggalPertama = pegawai.detail?.[0]?.TANGGAL;
+
+                    if (!tanggalPertama) {
+                        console.warn(`Data absensi kosong untuk NIP ${pegawai.NIP}`);
+                        return;
                     }
 
-                    hasilGabungan.push({
-                        ...pegawai,
-                        "HARI MASUK": uang["HARI MASUK"] ?? null,
-                        "UANG MAKAN": uang["UANG MAKAN"] ?? null,
-                        "PPH": uang["PPH"] ?? null,
-                        "JUMLAH BERSIH": uang["JUMLAH BERSIH"] ?? null
+                    const tahunAbsen = new Date(tanggalPertama).getFullYear();
+                    const bulanAbsen = new Date(tanggalPertama).getMonth() + 1;
+
+                    // Cari data uang makan berdasarkan NIP
+                    const uang = dataUangMakan.find(um => um.NIP === pegawai.NIP);
+
+                    if (uang) {
+                        const tahunUM = parseInt(uang.TAHUN);
+                        const bulanUM = parseInt(uang.BULAN);
+
+                        if (tahunUM !== tahunAbsen || bulanUM !== bulanAbsen) {
+                            alert(
+                                `❗ Perhatian: Data tahun/bulan tidak cocok untuk NIP ${pegawai.NIP} (${pegawai.NAMA})\nAbsensi: ${tahunAbsen}-${bulanAbsen}, Uang Makan: ${tahunUM}-${bulanUM}`
+                            );
+                        }
+
+                        hasilGabungan.push({
+                            ...pegawai,
+                            "HARI MASUK": uang["HARI MASUK"] ?? null,
+                            "UANG MAKAN": uang["UANG MAKAN"] ?? null,
+                            "PPH": uang["PPH"] ?? null,
+                            "JUMLAH BERSIH": uang["JUMLAH BERSIH"] ?? null
+                        });
+                    } else {
+                        // Tidak ditemukan data uang makan
+                        hasilGabungan.push({
+                            ...pegawai,
+                            "HARI MASUK": null,
+                            "UANG MAKAN": null,
+                            "PPH": null,
+                            "JUMLAH BERSIH": null
+                        });
+                    }
+                });
+
+                return hasilGabungan;
+            }
+
+            function mappingDataAbsensi(dataAbsensi) {
+                return dataAbsensi.map(pegawai => {
+                    const nip = pegawai.NIP;
+                    const nama = pegawai.NAMA;
+                    const hariMasuk = pegawai["HARI MASUK"] || 0;
+                    const jumlahKotor = pegawai["UANG MAKAN"] || 0;
+                    const potonganPajak = pegawai["PPH"] || 0;
+                    const totalBersih = pegawai["JUMLAH BERSIH"] || 0;
+
+                    const uangPerHari = hariMasuk > 0 ? (jumlahKotor - potonganPajak) / hariMasuk : 0;
+
+                    const detail = (pegawai.detail || []).map(item => {
+                        const absenMasuk = item["ABSEN MASUK"]?.trim();
+                        const absenPulang = item["ABSEN PULANG"]?.trim();
+
+                        const adaAbsen = absenMasuk || absenPulang;
+                        const uangHariIni = adaAbsen ? uangPerHari : null;
+
+                        const keteranganGabungan = [
+                                item.LIBUR?.trim(),
+                                item.KETERANGAN?.trim(),
+                                item["KETERANGAN 2"]?.trim()
+                            ]
+                            .filter(Boolean)
+                            .join(" / ");
+
+                        return {
+                            tanggal: item.TANGGAL,
+                            hari: item.HARI,
+                            jam_masuk: item["JAM MASUK"],
+                            absen_masuk: absenMasuk,
+                            jam_pulang: item["JAM PULANG"],
+                            absen_pulang: absenPulang,
+                            uang_per_hari: uangHariIni,
+                            keterangan: keteranganGabungan || "-"
+                        };
                     });
-                } else {
-                    // Tidak ditemukan data uang makan
-                    hasilGabungan.push({
-                        ...pegawai,
-                        "HARI MASUK": null,
-                        "UANG MAKAN": null,
-                        "PPH": null,
-                        "JUMLAH BERSIH": null
-                    });
+
+                    return {
+                        nip,
+                        nama,
+                        jumlah_kotor: jumlahKotor,
+                        potongan_pajak: potonganPajak,
+                        total_bersih: totalBersih,
+                        detail
+                    };
+                });
+            }
+    </script>
+
+    <script>
+        function previewSatuPegawai() {
+
+            $.ajax({
+                url: '/generate-zip',
+                type: 'POST',
+                data: JSON.stringify({
+                    pegawai_list: hasilrekapuangmakan, // array dari Laravel
+                    bulanTahun: bulanTahun
+                }),
+                contentType: 'application/json',
+                success: function(res) {
+                    // window.location.href = res.download_url; // jika kamu buat link download balik
+                },
+                error: function(xhr) {
+                    console.log(xhr);
+
                 }
             });
 
-            return hasilGabungan;
-        }
 
-        function mappingDataAbsensi(dataAbsensi) {
-            return dataAbsensi.map(pegawai => {
-                const nip = pegawai.NIP;
-                const nama = pegawai.NAMA;
-                const hariMasuk = pegawai["HARI MASUK"] || 0;
-                const jumlahKotor = pegawai["UANG MAKAN"] || 0;
-                const potonganPajak = pegawai["PPH"] || 0;
-                const totalBersih = pegawai["JUMLAH BERSIH"] || 0;
 
-                const uangPerHari = hariMasuk > 0 ? (jumlahKotor - potonganPajak) / hariMasuk : 0;
 
-                const detail = (pegawai.detail || []).map(item => {
-                    const absenMasuk = item["ABSEN MASUK"]?.trim();
-                    const absenPulang = item["ABSEN PULANG"]?.trim();
 
-                    const adaAbsen = absenMasuk || absenPulang;
-                    const uangHariIni = adaAbsen ? uangPerHari : null;
+            //         const pegawai = hasilrekapuangmakan[0]; // Ambil satu data pegawai dari JS variable kamu
+            //         const bulanTahun = $('#bulanTahun').val(); // Atau dari variable JS langsung
 
-                    const keteranganGabungan = [
-                            item.LIBUR?.trim(),
-                            item.KETERANGAN?.trim(),
-                            item["KETERANGAN 2"]?.trim()
-                        ]
-                        .filter(Boolean)
-                        .join(" / ");
+            //         const form = document.createElement('form');
+            //         form.method = 'POST';
+            //         form.action = '/export/rekap-preview';
+            //         form.target = '_blank';
 
-                    return {
-                        tanggal: item.TANGGAL,
-                        hari: item.HARI,
-                        jam_masuk: item["JAM MASUK"],
-                        absen_masuk: absenMasuk,
-                        jam_pulang: item["JAM PULANG"],
-                        absen_pulang: absenPulang,
-                        uang_per_hari: uangHariIni,
-                        keterangan: keteranganGabungan || "-"
-                    };
-                });
+            //         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                return {
-                    nip,
-                    nama,
-                    jumlah_kotor: jumlahKotor,
-                    potongan_pajak: potonganPajak,
-                    total_bersih: totalBersih,
-                    detail
-                };
-            });
+            //         form.innerHTML = `
+        //     <input type="hidden" name="_token" value="${csrfToken}">
+        //     <input type="hidden" name="data" value='${JSON.stringify([pegawai])}'>
+        //     <input type="hidden" name="bulanTahun" value="${bulanTahun}">
+        // `;
+
+            //         document.body.appendChild(form);
+            //         form.submit();
+            //         form.remove();
         }
     </script>
 @endsection

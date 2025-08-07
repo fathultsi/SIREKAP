@@ -11,4 +11,8 @@ class RekapController extends Controller
     {
         return view('pages.rekap.index');
     }
+    public function cetak()
+    {
+        return view('pages.report.cetak');
+    }
 }

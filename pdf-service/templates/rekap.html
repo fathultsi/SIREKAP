@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Rekap Uang Makan</title>
+        <style>
+            body {
+                font-size: 11.5px;
+                font-family: "DejaVu Sans", sans-serif;
+                margin: 0;
+                padding: 0;
+                zoom: 70%;
+            }
+
+            h4 {
+                font-size: 14px;
+                margin: 0 0 8px 0;
+                font-weight: normal;
+                text-align: left;
+            }
+
+            .container {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .card {
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                table-layout: fixed;
+            }
+
+            th,
+            td {
+                border: 0.5px solid #999;
+                padding: 3px 4px;
+                word-wrap: break-word;
+                vertical-align: top;
+                text-align: left;
+                font-weight: normal;
+            }
+
+            th {
+                background-color: #f1f1f1;
+            }
+
+            .baris-khusus {
+                background-color: #fff2cc;
+            }
+
+            .text-danger {
+                color: red;
+            }
+
+            .jumlah {
+                background-color: #f1f1f1;
+            }
+
+            p {
+                margin: 2px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h4>{{ pegawai.nama }} ({{ pegawai.nip }})</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TANGGAL</th>
+                        <th>HARI</th>
+                        <th>JAM MASUK</th>
+                        <th>ABSEN MASUK</th>
+                        <th>JAM PULANG</th>
+                        <th>ABSEN PULANG</th>
+                        <th>UANG MAKAN</th>
+                        <th style="width: 13%">KETERANGAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in pegawai.detail %} {% set keterangan =
+                    d.keterangan or '-' %} {% set is_khusus = keterangan not in
+                    ['-', 'Tanpa Keterangan'] %} {% set is_tanpa = keterangan ==
+                    'Tanpa Keterangan' %} {% if is_khusus %}
+                    <tr class="baris-khusus">
+                        <td class="{{ 'text-danger' if is_tanpa else '' }}">
+                            {{ d.tanggal_formatted }}
+                        </td>
+                        <td class="{{ 'text-danger' if is_tanpa else '' }}">
+                            {{ d.hari }}
+                        </td>
+                        <td colspan="6">
+                            {{ '' if keterangan == '-' else keterangan }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="{{ 'text-danger' if is_tanpa else '' }}">
+                            {{ d.tanggal_formatted }}
+                        </td>
+                        <td class="{{ 'text-danger' if is_tanpa else '' }}">
+                            {{ d.hari }}
+                        </td>
+                        <td>{{ d.jam_masuk or '-' }}</td>
+                        <td>{{ d.absen_masuk or '-' }}</td>
+                        <td>{{ d.jam_pulang or '-' }}</td>
+                        <td>{{ d.absen_pulang or '-' }}</td>
+                        <td>
+                            {{ '{:,.0f}'.format(d.uang_per_hari).replace(',',
+                            '.') if d.uang_per_hari else '0' }}
+                        </td>
+                        <td class="{{ 'text-danger' if is_tanpa else '' }}">
+                            {{ '' if keterangan == '-' else keterangan }}
+                        </td>
+                    </tr>
+                    {% endif %} {% endfor %}
+                    <tr class="jumlah">
+                        <td colspan="5"></td>
+                        <td>Jumlah Kotor</td>
+                        <td>
+                            {{
+                            '{:,.0f}'.format(pegawai.jumlah_kotor).replace(',',
+                            '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="jumlah">
+                        <td colspan="5"></td>
+                        <td>Potongan Pajak</td>
+                        <td>
+                            {{
+                            '{:,.0f}'.format(pegawai.potongan_pajak).replace(',',
+                            '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="jumlah">
+                        <td colspan="5"></td>
+                        <td>Total</td>
+                        <td>
+                            {{
+                            '{:,.0f}'.format(pegawai.total_bersih).replace(',',
+                            '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

@@ -6,9 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
+        "barryvdh/laravel-snappy": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "phpoffice/phpspreadsheet": "^4.4",
+        "spatie/browsershot": "^5.0",
         "yajra/laravel-datatables-oracle": "^11.1"
     },
     "require-dev": {
