@@ -3,7 +3,7 @@
         <a href="/halamanRekap" class="navbar-brand">
             <img src="{{ asset('templates/dist/img/profile.png') }}" alt="AdminLTE Logo"
                 class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">SIREKAP</span>
+            <span class="brand-text font-weight-light">SIREKTA</span>
         </a>
 
 

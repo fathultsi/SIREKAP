@@ -1,436 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
-    <title>Rekap Uang Makan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- <link rel="stylesheet" href="{{ public_path('templates/dist/uangmakan/bootstrap.min.css') }}"> --}}
-    <link rel="stylesheet" href="{{ asset('templates/dist/uangmakan/bootstrap.min.css') }}">
+    <title>Rekap Kehadiran</title>
     <style>
         body {
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 12px;
-            font-family: 'DejaVu Sans', sans-serif;
-        }
-
-        .fontable thead th {
-            font-weight: bold;
-            font-size: 12px;
-        }
-
-        .fontable tbody {
-            font-size: 12px;
+            color: #000;
+            margin: 0;
+            padding: 0;
         }
 
         table {
             border-collapse: collapse;
+            width: 100%;
         }
 
         th,
         td {
-            border: 1px solid #dee2e6;
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            text-align: left;
         }
 
-        .table-warning {
-            background-color: #fff3cd;
+        thead th {
+            background-color: #f3f3f3;
+            font-weight: bold;
         }
 
-        .table-light {
-            background-color: #f8f9fa;
+        .libur {
+            background-color: #fff7e6;
+            /* kuning pucat */
+            font-weight: bold;
         }
 
-        .text-danger {
+        .tanpa-keterangan {
             color: red;
         }
 
-        .container-fluid {
-            padding: 1rem;
+        .text-center {
+            text-align: center;
         }
 
-        .card {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-header {
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .card-body {
-            padding: 1rem;
-        }
-
-        /* Tambahan dari app.min.css */
-        .table-card {
-            box-shadow: 0 0 13px 0 rgba(236, 238, 239, 0.5);
-            border-radius: 0.42rem;
-            border: 1px solid #e9ebfa;
-            overflow-x: auto;
+        .text-right {
+            text-align: right;
         }
     </style>
-
 </head>
 
-{{-- cek apakah file ada echo file_exists(public_path('templates/dist/uangmakan/bootstrap.min.css')) ? 'ADA' : 'TIDAK ADA'; --}}
-@php
-    echo file_exists(public_path('templates/dist/uangmakan/bootstrap.min.css')) ? 'ADA' : 'TIDAK ADA';
-
-@endphp
-
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title mb-0">Data Kehadiran</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive table-card">
-                            <table class="table table-bordered table-striped fontable">
-                                <thead>
-                                    <tr>
-                                        <th>TANGGAL</th>
-                                        <th>HARI</th>
-                                        <th>JAM MASUK</th>
-                                        <th>ABSEN MASUK</th>
-                                        <th>JAM PULANG</th>
-                                        <th>ABSEN PULANG</th>
-                                        <th>UANG MAKAN</th>
-                                        <th>KETERANGAN</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-warning">
-                                        <td>01-06-2025</td>
-                                        <td>Minggu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td><b>Hari Lahir Pancasila</b></td>
-                                    </tr>
-                                    <tr class="table-light">
-                                        <td style="color: red;">02-06-2025</td>
-                                        <td style="color: red;">Senin</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td style="color: red;">Tanpa Keterangan</td>
-                                    </tr>
-                                    <tr class="table-light">
-                                        <td style="color: red;">03-06-2025</td>
-                                        <td style="color: red;">Selasa</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td style="color: red;">Tanpa Keterangan</td>
-                                    </tr>
-                                    <tr class="table-light">
-                                        <td style="color: red;">04-06-2025</td>
-                                        <td style="color: red;">Rabu</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td style="color: red;">Tanpa Keterangan</td>
-                                    </tr>
-                                    <tr class="table-light">
-                                        <td style="color: red;">05-06-2025</td>
-                                        <td style="color: red;">Kamis</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td style="color: red;">Tanpa Keterangan</td>
-                                    </tr>
-                                    <tr class="table-warning">
-                                        <td>06-06-2025</td>
-                                        <td>Jum'at</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td><b>Hari Raya Idul Adha 1446 Hijriah</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>07-06-2025</td>
-                                        <td>Sabtu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>08-06-2025</td>
-                                        <td>Minggu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="table-warning">
-                                        <td>09-06-2025</td>
-                                        <td>Senin</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td><b>Cuti Bersama Hari Raya Idul Adha 1446 Hijriah</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>10-06-2025</td>
-                                        <td>Selasa</td>
-                                        <td>07:30</td>
-                                        <td>07:00</td>
-                                        <td>16:00</td>
-                                        <td>16:00</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>11-06-2025</td>
-                                        <td>Rabu</td>
-                                        <td>07:30</td>
-                                        <td>07:25</td>
-                                        <td>16:00</td>
-                                        <td>16:36</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>12-06-2025</td>
-                                        <td>Kamis</td>
-                                        <td>07:30</td>
-                                        <td>07:25</td>
-                                        <td>16:00</td>
-                                        <td>16:17</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>13-06-2025</td>
-                                        <td>Jum'at</td>
-                                        <td>07:30</td>
-                                        <td>07:25</td>
-                                        <td>16:30</td>
-                                        <td>20:02</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>14-06-2025</td>
-                                        <td>Sabtu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>15-06-2025</td>
-                                        <td>Minggu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>16-06-2025</td>
-                                        <td>Senin</td>
-                                        <td>07:30</td>
-                                        <td>07:28</td>
-                                        <td>16:00</td>
-                                        <td>16:07</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>17-06-2025</td>
-                                        <td>Selasa</td>
-                                        <td>07:30</td>
-                                        <td>07:24</td>
-                                        <td>16:00</td>
-                                        <td>16:07</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>18-06-2025</td>
-                                        <td>Rabu</td>
-                                        <td>07:30</td>
-                                        <td>07:27</td>
-                                        <td>16:00</td>
-                                        <td>16:01</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>19-06-2025</td>
-                                        <td>Kamis</td>
-                                        <td>07:30</td>
-                                        <td>07:26</td>
-                                        <td>16:00</td>
-                                        <td>16:11</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>20-06-2025</td>
-                                        <td>Jum'at</td>
-                                        <td>07:30</td>
-                                        <td>07:01</td>
-                                        <td>16:30</td>
-                                        <td>16:41</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>21-06-2025</td>
-                                        <td>Sabtu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>22-06-2025</td>
-                                        <td>Minggu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>23-06-2025</td>
-                                        <td>Senin</td>
-                                        <td>07:30</td>
-                                        <td>07:18</td>
-                                        <td>16:00</td>
-                                        <td>16:33</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>24-06-2025</td>
-                                        <td>Selasa</td>
-                                        <td>07:30</td>
-                                        <td>07:23</td>
-                                        <td>16:00</td>
-                                        <td>16:05</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>25-06-2025</td>
-                                        <td>Rabu</td>
-                                        <td>07:30</td>
-                                        <td>07:27</td>
-                                        <td>16:00</td>
-                                        <td>16:44</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>26-06-2025</td>
-                                        <td>Kamis</td>
-                                        <td>07:30</td>
-                                        <td>07:26</td>
-                                        <td>16:00</td>
-                                        <td>17:34</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="table-warning">
-                                        <td>27-06-2025</td>
-                                        <td>Jum'at</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td><b>Tahun Baru Islam 1447 Hijriah (1 Muharam)</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>28-06-2025</td>
-                                        <td>Sabtu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>29-06-2025</td>
-                                        <td>Minggu</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>07:00</td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>30-06-2025</td>
-                                        <td>Senin</td>
-                                        <td>07:30</td>
-                                        <td>07:29</td>
-                                        <td>16:00</td>
-                                        <td>16:01</td>
-                                        <td>35.150</td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="5"></th>
-                                        <th>Jumlah Kotor</th>
-                                        <th>518.000</th>
-                                        <th></th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="5"></th>
-                                        <th>Potongan Pajak</th>
-                                        <th>25.900</th>
-                                        <th></th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="5"></th>
-                                        <th>Total</th>
-                                        <th>492.100</th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>TANGGAL</th>
+                <th>HARI</th>
+                <th>JAM MASUK</th>
+                <th>ABSEN MASUK</th>
+                <th>TERLAMBAT / CEPAT (Menit)</th>
+                <th>JAM PULANG</th>
+                <th>ABSEN PULANG</th>
+                <th>PSW / LEWAT WAKTU (Menit)</th>
+                <th>KETERANGAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="libur">
+                <td>01-06-2025</td>
+                <td>Minggu</td>
+                <td colspan="7">Hari Lahir Pancasila</td>
+            </tr>
+            <tr>
+                <td style="color:red;">02-06-2025</td>
+                <td>Senin</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="tanpa-keterangan">Tanpa keterangan</td>
+            </tr>
+            <tr>
+                <td style="color:red;">03-06-2025</td>
+                <td>Selasa</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="tanpa-keterangan">Tanpa keterangan</td>
+            </tr>
+            <tr class="libur">
+                <td>05-06-2025</td>
+                <td>Kamis</td>
+                <td colspan="7">Hari Raya Idul Adha 1446 H</td>
+            </tr>
+            <tr>
+                <td>06-06-2025</td>
+                <td>Jumat</td>
+                <td>07:00</td>
+                <td></td>
+                <td></td>
+                <td>07:00</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr class="libur">
+                <td>09-06-2025</td>
+                <td>Senin</td>
+                <td colspan="7">Cuti Bersama Hari Raya Idul Adha 1446 H</td>
+            </tr>
+            <tr>
+                <td>10-06-2025</td>
+                <td>Selasa</td>
+                <td>07:30</td>
+                <td>07:30</td>
+                <td class="text-right">0</td>
+                <td>16:00</td>
+                <td>16:00</td>
+                <td class="text-right">0</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>11-06-2025</td>
+                <td>Rabu</td>
+                <td>07:30</td>
+                <td>07:30</td>
+                <td class="text-right">0</td>
+                <td>16:00</td>
+                <td>16:05</td>
+                <td class="text-right">5</td>
+                <td class="tanpa-keterangan">Tanpa keterangan</td>
+            </tr>
+            <tr>
+                <td style="color:red;">13-06-2025</td>
+                <td>Jumat</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="tanpa-keterangan">Tanpa keterangan</td>
+            </tr>
+        </tbody>
+    </table>
+
 </body>
 
 </html>

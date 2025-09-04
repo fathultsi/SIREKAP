@@ -2,60 +2,69 @@
 <html lang="id">
     <head>
         <meta charset="UTF-8" />
+        <title>Rekap Uang Makan</title>
         <style>
-            @page {
-                size: A4 portrait; /* atau landscape kalau mau melebar */
-                margin: 7mm; /* tipis tapi rapi */
-            }
             body {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 11px;
-                color: #000;
+                font-size: 11.5px;
+                font-family: "DejaVu Sans", sans-serif;
+                margin: 0;
+                padding: 0;
+                zoom: 70%;
+            }
+
+            h4 {
+                font-size: 14px;
+                margin: 0 0 8px 0;
+                font-weight: normal;
+                text-align: left;
+            }
+
+            .container {
+                width: 100%;
                 margin: 0;
                 padding: 0;
             }
 
+            .card {
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
             table {
-                border-collapse: collapse;
                 width: 100%;
+                border-collapse: collapse;
+                table-layout: fixed;
             }
 
             th,
             td {
-                border: 1px solid #ddd;
-                padding: 5px 7px;
+                border: 0.5px solid #999;
+                padding: 3px 4px;
+                word-wrap: break-word;
+                vertical-align: top;
                 text-align: left;
+                font-weight: normal;
             }
 
-            thead th {
-                background-color: #f3f3f3;
-                font-weight: bold;
+            th {
+                background-color: #f1f1f1;
             }
 
-            .libur {
-                background-color: #fff2db; /* kuning pucat */
+            .baris-khusus {
+                background-color: #fff2cc;
             }
 
-            .tanpa-keterangan {
+            .text-danger {
                 color: red;
             }
 
-            .row-tanpa-keterangan {
-                background-color: #eef1f4 !important;
-                color: red !important;
+            .jumlah {
+                background-color: #f1f1f1;
             }
 
-            .text-center {
-                text-align: center;
-            }
-
-            .text-right {
-                text-align: right;
-            }
-
-            .jumlah td {
-                font-weight: bold;
-                background: #f9f9f9;
+            p {
+                margin: 2px 0;
             }
         </style>
     </head>
@@ -76,16 +85,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for d in pegawai.detail %} {% set raw_ket =
-                    d.keterangan|default(d.KETERANGAN|default('')) %} {% set
-                    keterangan = raw_ket|string|trim %} {% set is_tanpa =
-                    (keterangan|lower) == 'tanpa keterangan' %} {% set is_khusus
-                    = (keterangan != '' and keterangan != '-' and not is_tanpa)
-                    %} {% if is_khusus %}
+                    {% for d in pegawai.detail %} {% set keterangan =
+                    d.keterangan or '-' %} {% set is_khusus = keterangan not in
+                    ['-', 'Tanpa Keterangan'] %} {% set is_tanpa = keterangan ==
+                    'Tanpa Keterangan' %} {% if is_khusus %}
                     <tr class="libur">
                         <td>{{ d.tanggal_formatted }}</td>
                         <td>{{ d.hari }}</td>
-                        <td colspan="6">{{ keterangan }}</td>
+                        <td colspan="6"><b>{{ keterangan }}</b></td>
                     </tr>
                     {% elif is_tanpa %}
                     <tr class="row-tanpa-keterangan">
@@ -95,7 +102,7 @@
                         <td>{{ d.absen_masuk or '-' }}</td>
                         <td>{{ d.jam_pulang or '-' }}</td>
                         <td>{{ d.absen_pulang or '-' }}</td>
-                        <td class="text-right">
+                        <td>
                             {{ '{:,.0f}'.format(d.uang_per_hari).replace(',',
                             '.') if d.uang_per_hari else '0' }}
                         </td>
@@ -109,7 +116,7 @@
                         <td>{{ d.absen_masuk or '-' }}</td>
                         <td>{{ d.jam_pulang or '-' }}</td>
                         <td>{{ d.absen_pulang or '-' }}</td>
-                        <td class="text-right">
+                        <td>
                             {{ '{:,.0f}'.format(d.uang_per_hari).replace(',',
                             '.') if d.uang_per_hari else '0' }}
                         </td>
@@ -118,34 +125,31 @@
                     {% endif %} {% endfor %}
 
                     <tr class="jumlah">
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                         <td>Jumlah Kotor</td>
                         <td>
                             {{
-                            '{:,.0f}'.format(pegawai.jumlah_kotor|default(0)).replace(',',
+                            '{:,.0f}'.format(pegawai.jumlah_kotor).replace(',',
                             '.') }}
                         </td>
-                        <td></td>
                     </tr>
                     <tr class="jumlah">
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                         <td>Potongan Pajak</td>
                         <td>
                             {{
-                            '{:,.0f}'.format(pegawai.potongan_pajak|default(0)).replace(',',
+                            '{:,.0f}'.format(pegawai.potongan_pajak).replace(',',
                             '.') }}
                         </td>
-                        <td></td>
                     </tr>
                     <tr class="jumlah">
-                        <td colspan="5"></td>
+                        <td colspan="6"></td>
                         <td>Total</td>
                         <td>
                             {{
-                            '{:,.0f}'.format(pegawai.total_bersih|default(0)).replace(',',
+                            '{:,.0f}'.format(pegawai.total_bersih).replace(',',
                             '.') }}
                         </td>
-                        <td></td>
                     </tr>
                 </tbody>
             </table>

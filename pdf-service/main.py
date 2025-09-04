@@ -20,7 +20,7 @@ async def generate_zip(request: RekapRequest):
     bulan = request.bulan
     pegawai_list = request.pegawai_list
 
-    output_dir = f"output/{uuid.uuid4()}"
+    output_dir = f"output/{bulan}"
     os.makedirs(output_dir, exist_ok=True)
 
     pdf_paths = []
@@ -42,8 +42,42 @@ async def generate_zip(request: RekapRequest):
 
 
 
-    zip_filename = f"rekap_uang_makan_{bulan}_{uuid.uuid4().hex}.zip"
+    zip_filename = f"rekap_uang_makan_{bulan}.zip"
     zip_path = os.path.join("output", zip_filename)
+
+    with zipfile.ZipFile(zip_path, "w") as zipf:
+        for pdf in pdf_paths:
+            zipf.write(pdf, os.path.basename(pdf))
+
+    return FileResponse(zip_path, media_type="application/zip", filename=zip_filename)
+
+@app.post("/generate_kehadiran")
+async def generate_kehadiran(request: RekapRequest):
+    bulan = request.bulan
+    pegawai_list = request.pegawai_list
+
+    output_dir = f"output_kehadiran/{bulan}"
+    os.makedirs(output_dir, exist_ok=True)
+
+    pdf_paths = []
+    bulan_split = bulan.split(" ")
+    bulanTahun = {
+        "BULAN": bulan_split[0],
+        "TAHUN": bulan_split[1] if len(bulan_split) > 1 else ""
+    }
+
+    for p in pegawai_list:
+       
+        template = env.get_template("rekap_kehadiran.html")
+        html_out = template.render(pegawai=p, bulanTahun=bulanTahun)
+        pdf_path = os.path.join(output_dir, f"{p['NAMA'].replace(' ', '_')}_{p['NIP']}.pdf")
+        HTML(string=html_out, base_url="templates").write_pdf(pdf_path)
+        pdf_paths.append(pdf_path)
+
+
+
+    zip_filename = f"rekap_kehadiran_{bulan}.zip"
+    zip_path = os.path.join("output_kehadiran", zip_filename)
 
     with zipfile.ZipFile(zip_path, "w") as zipf:
         for pdf in pdf_paths:

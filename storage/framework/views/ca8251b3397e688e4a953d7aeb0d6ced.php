@@ -62,7 +62,7 @@
         <!-- /.content-wrapper -->
 
         <footer class="main-footer">
-            <strong>Copyright © 2025-<?php echo e(date('Y')); ?> <a href="#">SIREKAP versi
+            <strong>Copyright © 2025-<?php echo e(date('Y')); ?> <a href="#">SIREKTA versi
                     1.0</a>.</strong>
 
         </footer>

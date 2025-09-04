@@ -79,8 +79,44 @@ class PDFServiceController extends Controller
 
         if ($response->successful()) {
             // Simpan ZIP ke storage Laravel
-            $zipName = 'Rekap_Uang_Makan_' . now()->format('Ymd_His') . '.zip';
-            Storage::put("public/exports/{$zipName}", $response->body());
+            $zipName = 'Rekap_Uang_Makan_' . $request->input('bulanTahun') . '.zip';
+            Storage::disk('public')->put("exports/{$zipName}", $response->body());
+
+            return response()->json([
+                'success' => true,
+                'download_url' => asset("storage/exports/{$zipName}")
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal dari service Python',
+                'error' => $response->body()
+            ], 500);
+        }
+    }
+    public function generate_kehadiran(Request $request)
+    {
+        // jalankan sericve python masuk dlu  cd pdf-service/ lalu jalankan
+        // uvicorn main:app --reload
+
+        $data = [
+            'pegawai_list' => $request->input('pegawai_list'), // yang berisi array pegawai
+            'bulan' => $request->input('bulanTahun'),     // string "JULI 2025"
+        ];
+
+        foreach ($data['pegawai_list'] as &$pegawai) {
+            foreach ($pegawai['detail'] as &$d) {
+                $d['tanggal_formatted'] = Carbon::parse($d['TANGGAL'])->format('d-m-Y');
+            }
+        }
+
+
+        $response = Http::timeout(1000)->post('http://127.0.0.1:8000/generate_kehadiran', $data);
+
+        if ($response->successful()) {
+            // Simpan ZIP ke storage Laravel
+            $zipName = 'Rekap_kehadiran_' . $request->input('bulanTahun') . '.zip';
+            Storage::disk('public')->put("exports/{$zipName}", $response->body());
 
             return response()->json([
                 'success' => true,

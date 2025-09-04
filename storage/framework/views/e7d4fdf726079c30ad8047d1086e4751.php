@@ -157,9 +157,9 @@
 
 <?php $__env->startSection('content'); ?>
     <div class="container pt-4">
-        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+        
 
-        <button onclick="previewSatuPegawai()" class="btn btn-warning">Preview Satu Pegawai</button>
+
         <div class="row">
             <div class="col-12">
                 <div class="card card-outline card-success">
@@ -304,7 +304,12 @@
                                         <div class="card-tools">
                                             <button id="btn_export" class="btn btn-tool btn-sm bg-info">
                                                 <i class="fas fa-download"></i>
-                                                <span>Export</span>
+                                                <span>Export Excel</span>
+                                            </button>
+                                            <button id="btn_export_pdf" onclick="ExportZipKehadiran()"
+                                                class="btn btn-tool btn-sm bg-warning">
+                                                <i class="fas fa-file-pdf"></i>
+                                                <span>Generate Zip</span>
                                             </button>
                                         </div>
                                     </div>
@@ -340,37 +345,23 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card w-100">
+                                        <div class="card-header border-0">
+                                            <h3 class="card-title">Rekapitulasi Uang Makan <span
+                                                    class="ket_tanggal"></span></h3>
+                                            <div class="card-tools">
+                                                <button id="btn_exp_uang_makan" class="btn btn-tool btn-sm bg-info">
+                                                    <i class="fas fa-download"></i>
+                                                    <span>Export Excel</span>
+                                                </button>
+                                                <button class="btn btn-tool btn-sm bg-warning"
+                                                    onclick="ExporZiptUangMakan()">
+                                                    <i class="fas fa-file-archive"></i>
+                                                    <span>Generate Zip</span>
+                                                </button>
+                                            </div>
+                                        </div>
                                         
-                                        <div
-                                            class="card-header border-0 d-flex justify-content-between align-items-center flex-wrap">
-                                            <h3 class="card-title mb-2 mb-sm-0">
-                                                Rekapitulasi Uang Makan <span
-                                                    class="ket_tanggal text-muted font-weight-normal"></span>
-                                            </h3>
 
-                                            <div class="d-flex align-items-center flex-wrap gap-2">
-                                                <button id="btn_exp_uang_makan"
-                                                    class="btn btn-sm btn-outline-primary mr-2 mb-2">
-                                                    <i class="fas fa-file-export"></i> Export
-                                                </button>
-                                                <button id="btn_exp_uangmakan_zip"
-                                                    class="btn btn-sm btn-outline-success mb-2">
-                                                    <i class="fas fa-file-archive"></i> Export ZIP
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div class="px-3 pb-3">
-                                            <div id="status" class="mb-2 text-info font-weight-bold">
-                                            </div>
-
-                                            <div class="progress" style="height: 20px;">
-                                                <div id="progress-bar" class="progress-bar bg-success" role="progressbar"
-                                                    style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="card-body">
                                             <table id="table_rekap_uang_makan"
                                                 class="table table-bordered table-hover bg-white shadow-sm table-sm  w-100">
@@ -487,7 +478,13 @@
                         const filename = file.name.toLowerCase();
 
                         if (filename.includes("kehadiran")) {
-                            dataAbsensi = rows;
+
+                            dataAbsensi = rows.map(item => ({
+                                ...item,
+                                "ABSEN MASUK": formatTime(item["ABSEN MASUK"]),
+                                "ABSEN PULANG": formatTime(item["ABSEN PULANG"])
+                            }));
+
                         } else if (filename.includes("uang makan")) {
                             dataUangMakan = rows;
                         } else if (filename.includes("tukin")) {
@@ -525,6 +522,8 @@
                     dataPegawai = prosesDanGroupAbsensi(cekduplikat.unique);
                     dataPegawai = urutkanPegawai(dataPegawai);
                     inisialisasiRekap(dataPegawai);
+
+                    console.log("dataPegawai", dataPegawai);
                 }
 
                 // Proses uang makan
@@ -1197,74 +1196,6 @@
                     $('#status').text('❌ Gagal memproses');
                 }
             });
-
-            // $('#status').html('<span class="text-info">⏳ Memulai proses export...</span>');
-
-            // $.ajax({
-            //     url: '/export/request',
-            //     method: 'POST',
-            //     data: JSON.stringify({
-            //         data: hasilrekapuangmakan,
-            //         bulanTahun: bulanTahun,
-            //     }),
-            //     contentType: 'application/json',
-            //     success: function(res) {
-            //         $('#status').html('<span class="text-warning">🔄 Sedang diproses...</span>');
-
-            //         // Polling status setiap 5 detik
-            //         let interval = setInterval(function() {
-            //             $.get('/export/status', function(data) {
-            //                 if (data.status === 'done') {
-            //                     clearInterval(interval);
-            //                     $('#status').html(`
-        //                     <a href="${data.file_url}" class="btn btn-success" download>
-        //                         ✅ Download Rekap
-        //                     </a>
-        //                 `);
-            //                 } else if (data.status === 'failed') {
-            //                     clearInterval(interval);
-            //                     $('#status').html(
-            //                         '<span class="text-danger">❌ Gagal memproses export.</span>'
-            //                     );
-            //                 }
-            //             });
-            //         }, 5000);
-            //     },
-            //     error: function() {
-            //         $('#status').html(
-            //             '<span class="text-danger">❌ Terjadi kesalahan saat mengirim request.</span>');
-            //     }
-            // });
-
-            // $.ajax({
-            //     url: '/exportRekapUangMakanZip', // 👈 Ganti ke route ZIP
-            //     type: 'POST',
-            //     data: JSON.stringify({
-            //         data: hasilrekapuangmakan,
-            //         bulanTahun: bulanTahun,
-            //     }),
-            //     contentType: 'application/json',
-            //     xhrFields: {
-            //         responseType: 'blob'
-            //     },
-            //     success: function(response) {
-            //         const url = window.URL.createObjectURL(response);
-            //         const a = document.createElement('a');
-            //         a.href = url;
-            //         a.download = `Rekap_Uang_Makan_${bulanTahun}.zip`; // 👈 Nama file zip
-            //         document.body.appendChild(a);
-            //         a.click();
-            //         window.URL.revokeObjectURL(url);
-            //         a.remove();
-            //     },
-            //     error: function(xhr) {
-            //         Swal.fire({
-            //             icon: 'error',
-            //             title: 'Oops...',
-            //             text: xhr.responseJSON?.message || 'Terjadi kesalahan saat mengunduh ZIP.',
-            //         });
-            //     }
-            // });
         }
 
 
@@ -1374,12 +1305,25 @@
 
                 const uangPerHari = hariMasuk > 0 ? (jumlahKotor - potonganPajak) / hariMasuk : 0;
 
+                // ambil daftar tanggal yang masuk saat libur
+                const tanggalLibur = new Set((pegawai.masukSaatLibur || []).map(item => item.TANGGAL));
+
                 const detail = (pegawai.detail || []).map(item => {
                     const absenMasuk = item["ABSEN MASUK"]?.trim();
                     const absenPulang = item["ABSEN PULANG"]?.trim();
-
                     const adaAbsen = absenMasuk || absenPulang;
-                    const uangHariIni = adaAbsen ? uangPerHari : null;
+
+                    // cek apakah tanggal ini termasuk masuk saat libur
+                    const isLibur = tanggalLibur.has(item.TANGGAL);
+
+                    let uangHariIni;
+                    if (isLibur) {
+                        uangHariIni = 0; // ✅ semua masuk saat libur tetap 0
+                    } else if (adaAbsen) {
+                        uangHariIni = uangPerHari; // ✅ hari kerja + ada absen
+                    } else {
+                        uangHariIni = null; // ✅ hari kerja + tidak absen
+                    }
 
                     const keteranganGabungan = [
                             item.LIBUR?.trim(),
@@ -1411,10 +1355,71 @@
                 };
             });
         }
+
+        //original
+        // function mappingDataAbsensi(dataAbsensi) {
+        //     return dataAbsensi.map(pegawai => {
+        //         const nip = pegawai.NIP;
+        //         const nama = pegawai.NAMA;
+        //         const hariMasuk = pegawai["HARI MASUK"] || 0;
+        //         const jumlahKotor = pegawai["UANG MAKAN"] || 0;
+        //         const potonganPajak = pegawai["PPH"] || 0;
+        //         const totalBersih = pegawai["JUMLAH BERSIH"] || 0;
+
+        //         const uangPerHari = hariMasuk > 0 ? (jumlahKotor - potonganPajak) / hariMasuk : 0;
+
+        //         const detail = (pegawai.detail || []).map(item => {
+        //             const absenMasuk = item["ABSEN MASUK"]?.trim();
+        //             const absenPulang = item["ABSEN PULANG"]?.trim();
+
+        //             const adaAbsen = absenMasuk || absenPulang;
+        //             // const uangHariIni = adaAbsen ? uangPerHari : null;
+
+        //             const isLibur = !!item.LIBUR?.trim();
+
+        //             let uangHariIni;
+        //             if (isLibur) {
+        //                 uangHariIni = 0;
+        //             } else if (adaAbsen) {
+        //                 uangHariIni = uangPerHari;
+        //             } else {
+        //                 uangHariIni = null;
+        //             }
+
+        //             const keteranganGabungan = [
+        //                     item.LIBUR?.trim(),
+        //                     item.KETERANGAN?.trim(),
+        //                     item["KETERANGAN 2"]?.trim()
+        //                 ]
+        //                 .filter(Boolean)
+        //                 .join(" / ");
+
+        //             return {
+        //                 tanggal: item.TANGGAL,
+        //                 hari: item.HARI,
+        //                 jam_masuk: item["JAM MASUK"],
+        //                 absen_masuk: absenMasuk,
+        //                 jam_pulang: item["JAM PULANG"],
+        //                 absen_pulang: absenPulang,
+        //                 uang_per_hari: uangHariIni,
+        //                 keterangan: keteranganGabungan || "-"
+        //             };
+        //         });
+
+        //         return {
+        //             nip,
+        //             nama,
+        //             jumlah_kotor: jumlahKotor,
+        //             potongan_pajak: potonganPajak,
+        //             total_bersih: totalBersih,
+        //             detail
+        //         };
+        //     });
+        // }
     </script>
 
     <script>
-        function previewSatuPegawai() {
+        function ExporZiptUangMakan() {
 
             $.ajax({
                 url: '/generate-zip',
@@ -1425,37 +1430,91 @@
                 }),
                 contentType: 'application/json',
                 success: function(res) {
-                    // window.location.href = res.download_url; // jika kamu buat link download balik
+                    window.location.href = res.download_url; // jika kamu buat link download balik
                 },
                 error: function(xhr) {
                     console.log(xhr);
 
                 }
             });
+        }
+
+        function ExportZipKehadiran() {
+            let kirimdata = normalizeData(dataPegawai);
+            console.log("kirimdata", kirimdata);
+            $.ajax({
+                url: '/generate_kehadiran',
+                type: 'POST',
+                data: JSON.stringify({
+                    pegawai_list: kirimdata, // array dari Laravel
+                    bulanTahun: bulanTahun
+                }),
+                contentType: 'application/json',
+                success: function(res) {
+                    console.log("zipkehadiran", res);
+                    window.location.href = res.download_url; // jika kamu buat link download balik
+                },
+                error: function(xhr) {
+                    console.log(xhr);
+
+                }
+            });
+        }
+
+        function normalizeData(data) {
+            return data.map(item => {
+                // Ubah key di level atas
+                let newItem = {};
+                for (let key in item) {
+                    if (key === "detail") {
+                        // Mapping untuk detail
+                        newItem.detail = item.detail.map(det => {
+                            let newDet = {};
+                            for (let dKey in det) {
+                                let newKey = dKey.replace(/\s+/g, "_");
+                                newDet[newKey] = det[dKey];
+                            }
+
+                            // Atur logika untuk keterangan
+                            if (!newDet.KETERANGAN || newDet.KETERANGAN.trim() === "") {
+                                const keteranganGabungan = [
+                                        newDet.LIBUR?.trim(),
+                                        newDet.KETERANGAN_2?.trim()
+                                    ]
+                                    .filter(Boolean)
+                                    .join(" / ");
+
+                                newDet.KETERANGAN = keteranganGabungan || "";
+                            } else {
+                                const keteranganGabungan = [
+                                        newDet.LIBUR?.trim(),
+                                        newDet.KETERANGAN?.trim(),
+                                        newDet.KETERANGAN_2?.trim()
+                                    ]
+                                    .filter(Boolean)
+                                    .join(" / ");
+
+                                newDet.KETERANGAN = keteranganGabungan || newDet.KETERANGAN;
+                            }
 
 
+                            return newDet;
+                        });
+                    } else {
+                        let newKey = key.replace(/\s+/g, "_");
+                        newItem[newKey] = item[key];
+                    }
+                }
+                return newItem;
+            });
+        }
 
-
-
-            //         const pegawai = hasilrekapuangmakan[0]; // Ambil satu data pegawai dari JS variable kamu
-            //         const bulanTahun = $('#bulanTahun').val(); // Atau dari variable JS langsung
-
-            //         const form = document.createElement('form');
-            //         form.method = 'POST';
-            //         form.action = '/export/rekap-preview';
-            //         form.target = '_blank';
-
-            //         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            //         form.innerHTML = `
-        //     <input type="hidden" name="_token" value="${csrfToken}">
-        //     <input type="hidden" name="data" value='${JSON.stringify([pegawai])}'>
-        //     <input type="hidden" name="bulanTahun" value="${bulanTahun}">
-        // `;
-
-            //         document.body.appendChild(form);
-            //         form.submit();
-            //         form.remove();
+        function formatTime(time) {
+            if (!time) return "";
+            let [h, m] = time.split(":");
+            h = h.padStart(2, "0");
+            m = (m ?? "0").padStart(2, "0");
+            return `${h}:${m}`;
         }
     </script>
 <?php $__env->stopSection(); ?>

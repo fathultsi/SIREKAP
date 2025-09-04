@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Rekap Kehadiran</title>
+        <style>
+            @page {
+                    size: A4 portrait; /* atau landscape kalau mau melebar */
+                   margin: 7mm; /* tipis tapi rapi */
+                }
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 11px;
+                color: #000;
+                margin: 0;
+                padding: 0;
+         
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 5px 7px;
+                text-align: left;
+            }
+
+            thead th {
+                background-color: #f3f3f3;
+                font-weight: bold;
+            }
+
+            .libur {
+                background-color: #FFF2DB;
+                /* kuning pucat */
+                /* font-weight: bold; */
+            }
+
+            .tanpa-keterangan {
+                color: red;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+
+           .row-tanpa-keterangan {
+                background-color: #EEF1F4 !important;
+                color: red !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <table style="border-collapse: collapse; width: 50%; margin-bottom: 15px; font-size: 12px;">
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px 8px; width: 120px;">NIP</td>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">{{ pegawai.NIP }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">NAMA</td>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">{{ pegawai.NAMA }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">JABATAN</td>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">{{ pegawai.JABATAN }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">SATUAN KERJA</td>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">{{ pegawai.SATKER_2 }}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">PERIODE LAPORAN</td>
+                <td style="border: 1px solid #ddd; padding: 6px 8px;">
+                  <p>Bulan {{ bulanTahun.BULAN }}, Tahun {{ bulanTahun.TAHUN }}</p>
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>TANGGAL</th>
+                    <th>HARI</th>
+                    <th>JAM MASUK</th>
+                    <th>ABSEN MASUK</th>
+                    <th>TELAT / CEPAT (Menit)</th>
+                    <th>JAM PULANG</th>
+                    <th>ABSEN PULANG</th>
+                    <th>PSW / LEWAT WAKTU (Menit)</th>
+                    <th>KETERANGAN</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+                {% for d in pegawai.detail %}
+                    {% set is_tanpa = d.KETERANGAN == 'Tanpa Keterangan' %}
+                    {% set is_merah = is_tanpa %}
+                    {% set is_libur = d.LIBUR and d.LIBUR|trim != '' %}
+                    {% set is_tugas = d.JENIS_TUGAS and d.JENIS_TUGAS|trim != '' %}
+
+                    {% if is_libur %}
+                        <tr class="libur">
+                            <td{% if is_merah %} style="color: red"{% endif %}>{{ d.tanggal_formatted }}</td>
+                            <td>{{ d.HARI }}</td>
+                            <td colspan="7"><b>{{ d.KETERANGAN }}</b></td>
+                        </tr>
+                    {% elif is_tugas %}
+                        <tr class="libur">
+                            <td{% if is_merah %} style="color: red"{% endif %}>{{ d.tanggal_formatted }}</td>
+                            <td>{{ d.HARI }}</td>
+                            <td colspan="7">{{ d.KETERANGAN }}</td>
+                        </tr>
+                    {% else %}
+                        <tr{% if is_tanpa %} class="row-tanpa-keterangan"{% endif %}>
+                            <td>{{ d.tanggal_formatted }}</td>
+                            <td>{{ d.HARI }}</td>
+                            <td>{{ d.JAM_MASUK or '' }}</td>
+                            <td>{{ d.ABSEN_MASUK or '' }}</td>
+                            <td class="text-right">{{ d.CEPAT_TELAT or '' }}</td>
+                            <td>{{ d.JAM_PULANG or '' }}</td>
+                            <td>{{ d.ABSEN_PULANG or '' }}</td>
+                            <td class="text-right">{{ d.PSW or '' }}</td>
+                            <td>{{ d.KETERANGAN or '' }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </body>
+</html>

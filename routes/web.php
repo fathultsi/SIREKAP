@@ -9,7 +9,19 @@ use App\Http\Controllers\ExportRekapUangMakanController;
 use App\Http\Controllers\ExportRekapUangMakanZipController;
 use App\Http\Controllers\PDFServiceController;
 
+
+Route::get('/storage/exports/{filename}', function ($filename) {
+    $path = storage_path('app/public/exports/' . $filename);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->download($path);
+});
+
 Route::post('/generate-zip', [PDFServiceController::class, 'generateZip']);
+Route::post('/generate_kehadiran', [PDFServiceController::class, 'generate_kehadiran']);
 
 // Route::get('/', function () {
 //     return view('layouts.main');
