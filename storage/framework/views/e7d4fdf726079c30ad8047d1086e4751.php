@@ -431,6 +431,376 @@
             "198007132014101003"
         ];
 
+        const statusMap = [{
+                "STATUS_MAP": "SETJEN",
+                "NIP": "196611182005011002"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "198404212011012017"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197212312014111009"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197308102025212008"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198707272025211026"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198908032025211015"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199201192025212011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199306052025212022"
+            },
+            {
+                "STATUS_MAP": "PNS MADRASAH",
+                "NIP": "196812312005011067"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197802062014121001"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "199511092023211014"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197303082025212004"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198606262025212015"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198707102025212024"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "198002032009121001"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198406212025211013"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199407052025211011"
+            },
+            {
+                "STATUS_MAP": "PNS MADRASAH",
+                "NIP": "197606071999031003"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197206182014111001"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198910192025212010"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199103032025212025"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "196812312005011069"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "196904012025211004"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197803012025212008"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199212072025212004"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199910092025212004"
+            },
+            {
+                "STATUS_MAP": "PNS MADRASAH",
+                "NIP": "197002102006042001"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197405182006041019"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "196912312014112015"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "198810082023212031"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197806052025211004"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198103282025212005"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198405262025211011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199210082025212016"
+            },
+            {
+                "STATUS_MAP": "PENDIS",
+                "NIP": "197401311999031005"
+            },
+            {
+                "STATUS_MAP": "PENDIS",
+                "NIP": "198007132014101003"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198205102025211016"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198310112025212009"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198710042025212011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199407232025212019"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199510082025212020"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199606062025211017"
+            },
+            {
+                "STATUS_MAP": "PNS MADRASAH",
+                "NIP": "196912312005011065"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197303032025211017"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197912092025211007"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199707062025212005"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "198310102009121007"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "198802172023211024"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199409152025211013"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "196812311998031016"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "199606172022032003"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197203142025211011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197812252025212011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198405172025211011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199709242025212004"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "196912312014111018"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "199804112022032001"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "199703292023212015"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197512312025211030"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198706082025212017"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197101011997032002"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "196807012025212003"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198102062025212008"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198511102025212019"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198901182025212001"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199302132025212017"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198701122025211012"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197711252005012008"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198405032025212008"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198805052025212022"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199705112025212003"
+            },
+            {
+                "STATUS_MAP": "PENDIS",
+                "NIP": "198009292011012012"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "198803142023211029"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198008122025212008"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "197611282007101001"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "199607262023211015"
+            },
+            {
+                "STATUS_MAP": "SETJEN",
+                "NIP": "199503012020122016"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "199305232023211014"
+            },
+            {
+                "STATUS_MAP": "P3K LAMA",
+                "NIP": "199310052023211028"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198504042025212016"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198708012025212015"
+            },
+            {
+                "STATUS_MAP": "CPNS",
+                "NIP": "199507212025051004"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "197904302025211008"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198712212025211011"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199203112025212013"
+            },
+            {
+                "STATUS_MAP": "CPNS",
+                "NIP": "199802122025051007"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199107032025212012"
+            },
+            {
+                "STATUS_MAP": "CPNS",
+                "NIP": "199903182025051005"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198302232025211009"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "198712312025212024"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199312212025212005"
+            },
+            {
+                "STATUS_MAP": "PPPK BARU",
+                "NIP": "199605292025212013"
+            }
+        ];
+
         $(document).ready(function() {
             $('#rekapTable').DataTable({
                 columnDefs: [{
@@ -522,6 +892,14 @@
                     dataPegawai = prosesDanGroupAbsensi(cekduplikat.unique);
                     dataPegawai = urutkanPegawai(dataPegawai);
                     inisialisasiRekap(dataPegawai);
+
+                    dataPegawai = dataPegawai.map(p => {
+                        const found = statusMap.find(s => s.NIP === p.NIP);
+                        return {
+                            ...p,
+                            STATUS_MAP: found ? found.STATUS_MAP : "LAINNYA"
+                        };
+                    });
 
                     console.log("dataPegawai", dataPegawai);
                 }
@@ -1348,6 +1726,7 @@
                 return {
                     nip,
                     nama,
+                    STATUS_MAP: pegawai.STATUS_MAP,
                     jumlah_kotor: jumlahKotor,
                     potongan_pajak: potonganPajak,
                     total_bersih: totalBersih,
