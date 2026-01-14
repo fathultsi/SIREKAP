@@ -27,7 +27,7 @@ async def generate_zip(request: RekapRequest):
     pdf_paths = []
 
     for p in pegawai_list:
-        status_map = p.get("STATUS_MAP", "LAINNYA")  # default kalau tidak ada
+        status_map = p.get("STATUS_MAP", "PPPK_TAHAP_2")  # default kalau tidak ada
         # bikin folder per status map
         status_dir = os.path.join(base_output_dir, status_map)
         os.makedirs(status_dir, exist_ok=True)
@@ -74,7 +74,7 @@ async def generate_kehadiran(request: RekapRequest):
     }
 
     for p in pegawai_list:
-        status_map = p.get("STATUS_MAP", "LAINNYA")  # default kalau kosong
+        status_map = p.get("STATUS_MAP", "PPPK_TAHAP_2")  # default kalau kosong
         # bikin folder berdasarkan status map
         status_dir = os.path.join(base_output_dir, status_map)
         os.makedirs(status_dir, exist_ok=True)

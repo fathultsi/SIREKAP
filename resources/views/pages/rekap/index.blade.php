@@ -285,11 +285,11 @@
                                 href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile"
                                 aria-selected="false">Uang Makan</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-four-messages-tab" data-toggle="pill"
                                 href="#custom-tabs-four-messages" role="tab"
                                 aria-controls="custom-tabs-four-messages" aria-selected="false">Tukin</a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
                 <div class="card-body">
@@ -897,6 +897,31 @@
 
 
             function prosesSemuaFile(dataAbsensi, dataUangMakan, dataTunjangan) {
+
+                // const nipDikecualikan = [
+                //     "199607022025211045",
+                //     "198809082025211051",
+                //     "198603022025212055",
+                //     "198501292025212012",
+                //     "199202142025212061",
+                //     "197707162025211027",
+                //     "198305122025211062",
+                //     "198512252025212053",
+                //     "198001102025212027",
+                //     "198106302025211035",
+                //     "198212132025211034",
+                //     "198708082025211058",
+                //     "198408102025212052",
+                //     "199204072025211046",
+                //     "199012182025212050",
+                //     "197109132025211010",
+                //     "198803072025211049",
+                //     "198708092025212063"
+                // ];
+
+                // dataAbsensi = dataAbsensi.filter(item => !nipDikecualikan.includes(item.NIP));
+                // dataUangMakan = dataUangMakan.filter(item => !nipDikecualikan.includes(item.NIP));
+
                 console.log("ABSENSI:", dataAbsensi);
                 console.log("UANG MAKAN:", dataUangMakan);
                 console.log("TUNJANGAN:", dataTunjangan);
@@ -919,7 +944,7 @@
                         const found = statusMap.find(s => s.NIP === p.NIP);
                         return {
                             ...p,
-                            STATUS_MAP: found ? found.STATUS_MAP : "LAINNYA"
+                            STATUS_MAP: found ? found.STATUS_MAP : "PPPK_TAHAP_2"
                         };
                     });
 

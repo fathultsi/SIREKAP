@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <style>
+            @page {
+                size: A4 portrait; /* atau landscape kalau mau melebar */
+                margin: 7mm; /* tipis tapi rapi */
+            }
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 11px;
+                color: #000;
+                margin: 0;
+                padding: 0;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 5px 7px;
+                text-align: left;
+            }
+
+            thead th {
+                background-color: #f3f3f3;
+                font-weight: bold;
+            }
+
+            .libur {
+                background-color: #fff2db; /* kuning pucat */
+            }
+
+            .tanpa-keterangan {
+                color: red;
+            }
+
+            .row-tanpa-keterangan {
+                background-color: #eef1f4 !important;
+                color: red !important;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+
+            .jumlah td {
+                font-weight: bold;
+                background: #f9f9f9;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h4>{{ pegawai.nama }} ({{ pegawai.nip }})</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TANGGAL</th>
+                        <th>HARI</th>
+                        <th>JAM MASUK</th>
+                        <th>ABSEN MASUK</th>
+                        <th>JAM PULANG</th>
+                        <th>ABSEN PULANG</th>
+                        <th>UANG MAKAN</th>
+                        <th style="width: 13%">KETERANGAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in pegawai.detail %} {% set raw_ket =
+                    d.keterangan|default(d.KETERANGAN|default('')) %} {% set
+                    keterangan = raw_ket|string|trim %} {% set is_tanpa =
+                    (keterangan|lower) == 'tanpa keterangan' %} {% set is_khusus
+                    = (keterangan != '' and keterangan != '-' and not is_tanpa)
+                    %} {% if is_khusus %}
+                    <tr class="libur">
+                        <td>{{ d.tanggal_formatted }}</td>
+                        <td>{{ d.hari }}</td>
+                        <td colspan="6">{{ keterangan }}</td>
+                    </tr>
+                    {% elif is_tanpa %}
+                    <tr class="row-tanpa-keterangan">
+                        <td>{{ d.tanggal_formatted }}</td>
+                        <td>{{ d.hari }}</td>
+                        <td>{{ d.jam_masuk or '-' }}</td>
+                        <td>{{ d.absen_masuk or '-' }}</td>
+                        <td>{{ d.jam_pulang or '-' }}</td>
+                        <td>{{ d.absen_pulang or '-' }}</td>
+                        <td class="text-right">
+                            {{ '{:,.0f}'.format(d.uang_per_hari).replace(',',
+                            '.') if d.uang_per_hari else '0' }}
+                        </td>
+                        <td>{{ keterangan }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>{{ d.tanggal_formatted }}</td>
+                        <td>{{ d.hari }}</td>
+                        <td>{{ d.jam_masuk or '-' }}</td>
+                        <td>{{ d.absen_masuk or '-' }}</td>
+                        <td>{{ d.jam_pulang or '-' }}</td>
+                        <td>{{ d.absen_pulang or '-' }}</td>
+                        <td class="text-right">
+                            {{ '{:,.0f}'.format(d.uang_per_hari).replace(',',
+                            '.') if d.uang_per_hari else '0' }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    {% endif %} {% endfor %}
+
+                    <tr class="jumlah">
+                        <td colspan="5"></td>
+                        <td>Jumlah Kotor</td>
+                        <td>
+                            {{
+                            '{:,.0f}'.format(pegawai.jumlah_kotor|default(0)).replace(',',
+                            '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="jumlah">
+                        <td colspan="5"></td>
+                        <td>Potongan Pajak</td>
+                        <td>
+                            {{
+                            '{:,.0f}'.format(pegawai.potongan_pajak|default(0)).replace(',',
+                            '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="jumlah">
+                        <td colspan="5"></td>
+                        <td>Total</td>
+                        <td>
+                            {{
+                            '{:,.0f}'.format(pegawai.total_bersih|default(0)).replace(',',
+                            '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

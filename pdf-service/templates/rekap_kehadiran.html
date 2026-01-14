@@ -5,9 +5,9 @@
         <title>Rekap Kehadiran</title>
         <style>
             @page {
-                    size: A4 portrait; /* atau landscape kalau mau melebar */
-                   margin: 7mm; /* tipis tapi rapi */
-                }
+                size: 210mm 330mm; /* F4 / Folio */
+                margin: 7mm;
+            }
             body {
                 font-family: Arial, Helvetica, sans-serif;
                 font-size: 11px;
@@ -56,6 +56,26 @@
                 background-color: #EEF1F4 !important;
                 color: red !important;
             }
+            .ttd-wrapper {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .ttd-kanan {
+                width: 40%;
+                margin-left: auto; /* dorong ke kanan */
+                text-align: center;
+                font-size: 12px;
+            }
+
+            .ttd-space {
+                height: 70px; /* ruang tanda tangan manual */
+            }
+
+            .ttd-kanan .nama {
+                margin-top: 0;
+            }
+
         </style>
     </head>
 
@@ -137,5 +157,17 @@
 
             </tbody>
         </table>
+        <div class="ttd-wrapper">
+            <div class="ttd-kanan">
+                <p>Mengetahui,<br>Kepala Kantor</p>
+
+                <div class="ttd-space"></div>
+
+                <p class="nama">
+                    <u><b>Drs. LA DIRI, MA</b></u><br>
+                    NIP. 196812311998031016
+                </p>
+            </div>
+        </div>
     </body>
 </html>
