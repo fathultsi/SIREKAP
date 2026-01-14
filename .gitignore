@@ -21,3 +21,9 @@ yarn-error.log
 /.vscode
 /.zed
 /storage/**
+dist/
+build/
+target/
+*.jar
+*.zip
+
