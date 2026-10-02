@@ -63,7 +63,7 @@
 
             .ttd-kanan {
                 width: 40%;
-                margin-left: auto; /* dorong ke kanan */
+                margin-right: auto; /* dorong ke kanan */
                 text-align: center;
                 font-size: 12px;
             }
@@ -159,14 +159,30 @@
         </table>
         <div class="ttd-wrapper">
             <div class="ttd-kanan">
-                <p>Mengetahui,<br>Kepala Kantor</p>
+                {% if pegawai.NIP == '197101011997032002' 
+                    or pegawai.NIP == '196812311998031016' %}
 
-                <div class="ttd-space"></div>
+                    <p>Mengetahui,<br>Kepala Kantor</p>
 
-                <p class="nama">
-                    <u><b>Drs. LA DIRI, MA</b></u><br>
-                    NIP. 196812311998031016
-                </p>
+                    <div class="ttd-space"></div>
+
+                    <p class="nama">
+                        <u><b>HAMID RIJALI S.Pd.,M.PFis</b></u><br>
+                        NIP. 198007152005011007
+                    </p>
+
+                {% else %}
+
+                    <p>Mengetahui,<br>Kepala Sub Bagian Tata Usaha</p>
+
+                    <div class="ttd-space"></div>
+
+                    <p class="nama">
+                        <u><b>Hj. Nur Bayny, S.Pd.</b></u><br>
+                        NIP. 197101011997032002
+                    </p>
+
+                {% endif %}
             </div>
         </div>
     </body>
