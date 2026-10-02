@@ -180,7 +180,7 @@ class ExportExcelController extends Controller
         $sheet1->setCellValue("G{$row}", 'Buranga, ' . date('d F Y'));
         $sheet1->getStyle("G{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet1->mergeCells("G" . ($row + 3) . ":I" . ($row + 3));
-        $sheet1->setCellValue("G" . ($row + 3), '(Drs. LA DIRI, MA)');
+        $sheet1->setCellValue("G" . ($row + 3), '(HAMID RIJALI S.Pd.,M.PFis)');
         $sheet1->getStyle("G" . ($row + 3))->getFont()->setBold(true);
         $sheet1->getStyle("G" . ($row + 3))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet1->getPageSetup()->setPrintArea("A1:I" . ($row + 5));

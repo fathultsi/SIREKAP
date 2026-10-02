@@ -651,7 +651,7 @@
             },
             {
                 "STATUS_MAP": "SETJEN",
-                "NIP": "196812311998031016"
+                "NIP": "198007152005011007"
             },
             {
                 "STATUS_MAP": "SETJEN",
@@ -879,6 +879,8 @@
 
                         } else if (filename.includes("uang makan")) {
                             dataUangMakan = rows;
+                        } else if (filename.includes("ukan")) {
+                            dataUangMakan = rows;
                         } else if (filename.includes("tukin")) {
                             dataTunjangan = rows;
                         }
@@ -1069,7 +1071,11 @@
                     (item["ABSEN MASUK"] && !item["ABSEN PULANG"]) ||
                     (!item["ABSEN MASUK"] && item["ABSEN PULANG"]);
 
-                const isTanpaKeterangan = item["KETERANGAN 2"]?.trim() === "Tanpa Keterangan";
+                const keterangan =
+                item["KETERANGAN 2"] ?? item["KETERANGAN2"];
+
+                const isTanpaKeterangan =
+                keterangan?.trim() === "Tanpa Keterangan";
 
                 if (!isTanpaKeterangan) {
                     grouped[key].masukKerja.push(item);
@@ -1194,7 +1200,17 @@
           </tr>
         </thead>
         <tbody>
-          ${data.map(row => `<tr><td>${no_urut++}</td> <td>${row.TANGGAL || "-"}</td><td>${row.HARI || "-"}</td> <td>${row["ABSEN MASUK"] || "-"}</td><td>${row["ABSEN PULANG"] || "-"}</td> <td>${row["JENIS TUGAS"] || "-"}</td><td>${row["KETERANGAN"] || row["KETERANGAN 2"]}</td> </tr>`).join('')} 
+            ${data.map(row => `
+                <tr>
+                <td>${no_urut++}</td>
+                <td>${row.TANGGAL || "-"}</td>
+                <td>${row.HARI || "-"}</td>
+                <td>${row["ABSEN MASUK"] || "-"}</td>
+                <td>${row["ABSEN PULANG"] || "-"}</td>
+                <td>${row["JENIS TUGAS"] || "-"}</td>
+                <td>${row["KETERANGAN"] ?? row["KETERANGAN 2"] ?? row["KETERANGAN2"] ?? "-"}</td>
+                </tr>
+            `).join('')}
         </tbody>
       </table>
     `;
@@ -1211,7 +1227,7 @@
 
         function urutkanPegawai(dataPegawai) {
             const prioritasNIP = [
-                "196812311998031016",
+                "198007152005011007",
                 "197101011997032002",
                 "199503012020122016",
                 "197206182014111001",
@@ -1751,12 +1767,12 @@
                     }
 
                     const keteranganGabungan = [
-                            item.LIBUR?.trim(),
-                            item.KETERANGAN?.trim(),
-                            item["KETERANGAN 2"]?.trim()
-                        ]
-                        .filter(Boolean)
-                        .join(" / ");
+                        item.LIBUR?.trim(),
+                        item.KETERANGAN?.trim(),
+                        (item["KETERANGAN 2"] ?? item["KETERANGAN2"])?.trim()
+                    ]
+                    .filter(Boolean)
+                    .join(" / ");
 
                     return {
                         tanggal: item.TANGGAL,
